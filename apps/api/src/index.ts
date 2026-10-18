@@ -31,6 +31,8 @@ import {
   mentorshipStudentRoutes,
   mentorPortalRoutes,
   masterTagRoutes,
+  taskCardSetRoutes,
+  taskCardGroupRoutes,
 } from "./routes/index.js";
 
 
@@ -100,6 +102,8 @@ app.use('/api/mentorship-dashboard', mentorshipDashboardRoutes);
 app.use('/api/mentorship-student', mentorshipStudentRoutes);
 app.use('/api/mentor-portal', mentorPortalRoutes);
 app.use('/api/master-tags', masterTagRoutes);
+app.use('/api/task-card-sets', taskCardSetRoutes);
+app.use('/api/task-card-groups', taskCardGroupRoutes);
 
 
 // 404 handler

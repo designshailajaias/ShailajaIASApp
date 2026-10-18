@@ -6,6 +6,14 @@ At the start of EVERY new conversation on this project, you MUST:
 2. Follow `.agent/workflows/session_start.md` for the full protocol
 At the END of every session with meaningful code changes, UPDATE `AI_DIARY.md` changelog.
 
+## 🛑 STRICT PLANNING & USER APPROVAL PROTOCOL
+Before modifying, replacing, or creating ANY source code or configuration files, the AI MUST:
+1. Formulate and present a clear, step-by-step implementation plan.
+2. Outline the exact files to be created or modified.
+3. Explicitly request the USER's review and approval.
+4. WAIT for the USER's confirmation ("Proceed", "Approved", etc.) before making file changes.
+Never execute file-modifying tools during pure analysis or exploratory inquiries.
+
 ---
 
 # Project Style Guide: Shailaja IAS

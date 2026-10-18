@@ -13,6 +13,8 @@ import {
     CourseNode,
     CourseGroup,
     MentorshipRequest,
+    TaskCardGroup,
+    TaskCardSet,
 } from '../models/index.js';
 
 // @desc    Get student daily task data + 14-day study log + subscribed course tasks & revision cards
@@ -47,69 +49,128 @@ export const getDailyTaskData = async (req: AuthRequest, res: Response): Promise
             userId: studentId,
         }).lean();
 
-        // Fetch courses linked to student's master tags or all published root courses
-        let courseQuery: any = { level: 'course', isPublished: true };
-        if (purchasedTags.length > 0) {
-            courseQuery.mentorTags = { $in: purchasedTags };
-        }
-        let courses = await CourseNode.find(courseQuery).lean();
-        if (courses.length === 0) {
-            // Fallback to all published root courses so student always has study task cards
-            courses = await CourseNode.find({ level: 'course', isPublished: true }).lean();
-        }
-
-        // Sort courses: If student has approved mentorshipCourseOrder, respect it; otherwise respect c.order (admin order)
-        const customOrder: string[] = user?.mentorshipCourseOrder || [];
-        if (customOrder.length > 0) {
-            courses.sort((a: any, b: any) => {
-                const idA = a._id.toString();
-                const idB = b._id.toString();
-                const idxA = customOrder.indexOf(idA);
-                const idxB = customOrder.indexOf(idB);
-                if (idxA !== -1 && idxB !== -1) return idxA - idxB;
-                if (idxA !== -1) return -1;
-                if (idxB !== -1) return 1;
-                return (a.order || 0) - (b.order || 0);
-            });
+        // Check if student is assigned an active TaskCardGroup
+        let assignedGroup: any = null;
+        if (user?.activeTaskCardGroupId) {
+            assignedGroup = await TaskCardGroup.findById(user.activeTaskCardGroupId)
+                .populate({
+                    path: 'sets.setId',
+                    model: 'TaskCardSet',
+                })
+                .lean();
+        } else if (Array.isArray(user?.purchasedTaskCardGroups) && user.purchasedTaskCardGroups.length > 0) {
+            assignedGroup = await TaskCardGroup.findById(user.purchasedTaskCardGroups[0])
+                .populate({
+                    path: 'sets.setId',
+                    model: 'TaskCardSet',
+                })
+                .lean();
         } else {
-            courses.sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
+            // Look up if any published TaskCardGroup exists
+            assignedGroup = await TaskCardGroup.findOne({ isPublished: true })
+                .populate({
+                    path: 'sets.setId',
+                    model: 'TaskCardSet',
+                })
+                .sort({ createdAt: -1 })
+                .lean();
         }
 
-        // For each root course, fetch its child topics/subtopics to aggregate video items
-        const populatedCourses = await Promise.all(
-            courses.map(async (c: any) => {
-                const childNodes = await CourseNode.find({
-                    $or: [{ _id: c._id }, { parent: c._id }],
-                }).lean();
+        let populatedCourses: any[] = [];
+        let activeGroupInfo: any = null;
 
-                const allVideos: any[] = [];
-                childNodes.forEach((cn: any) => {
-                    if (Array.isArray(cn.videos) && cn.videos.length > 0) {
-                        cn.videos.forEach((v: any) => {
-                            allVideos.push({
-                                ...v,
-                                courseId: c._id,
-                                courseTitle: c.title,
-                                nodeTitle: cn.title,
-                            });
-                        });
-                    }
-                });
+        if (assignedGroup && Array.isArray(assignedGroup.sets) && assignedGroup.sets.length > 0) {
+            activeGroupInfo = {
+                _id: assignedGroup._id,
+                title: assignedGroup.title,
+                description: assignedGroup.description || '',
+            };
 
+            const sortedGroupSets = assignedGroup.sets
+                .filter((item: any) => item.setId)
+                .sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
+
+            populatedCourses = sortedGroupSets.map((item: any) => {
+                const s = item.setId;
+                const sortedCards = (s.cards || []).slice().sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
                 return {
-                    _id: c._id,
-                    title: c.title,
-                    description: c.description,
-                    mentorTags: c.mentorTags || [],
-                    ptsGroupCode: c.ptsGroupCode || '',
-                    mtsGroupCode: c.mtsGroupCode || '',
-                    videos: allVideos,
-                    taskCards: Array.isArray(c.taskCards) && c.taskCards.length > 0
-                        ? [...c.taskCards].sort((a: any, b: any) => (a.order || 0) - (b.order || 0))
-                        : [],
+                    _id: s._id,
+                    title: s.title,
+                    description: s.description || '',
+                    mentorTags: [s.track || 'GS', s.title],
+                    track: s.track || 'GS',
+                    ptsGroupCode: '',
+                    mtsGroupCode: '',
+                    videos: [],
+                    taskCards: sortedCards,
+                    isTaskCardSet: true,
+                    taskCardGroupId: assignedGroup._id,
                 };
-            })
-        );
+            });
+        }
+
+        // Fallback to legacy courses if no TaskCardGroup sets available
+        if (populatedCourses.length === 0) {
+            let courseQuery: any = { level: 'course', isPublished: true };
+            if (purchasedTags.length > 0) {
+                courseQuery.mentorTags = { $in: purchasedTags };
+            }
+            let courses = await CourseNode.find(courseQuery).lean();
+            if (courses.length === 0) {
+                courses = await CourseNode.find({ level: 'course', isPublished: true }).lean();
+            }
+
+            const customOrder: string[] = user?.mentorshipCourseOrder || [];
+            if (customOrder.length > 0) {
+                courses.sort((a: any, b: any) => {
+                    const idA = a._id.toString();
+                    const idB = b._id.toString();
+                    const idxA = customOrder.indexOf(idA);
+                    const idxB = customOrder.indexOf(idB);
+                    if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+                    if (idxA !== -1) return -1;
+                    if (idxB !== -1) return 1;
+                    return (a.order || 0) - (b.order || 0);
+                });
+            } else {
+                courses.sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
+            }
+
+            populatedCourses = await Promise.all(
+                courses.map(async (c: any) => {
+                    const childNodes = await CourseNode.find({
+                        $or: [{ _id: c._id }, { parent: c._id }],
+                    }).lean();
+
+                    const allVideos: any[] = [];
+                    childNodes.forEach((cn: any) => {
+                        if (Array.isArray(cn.videos) && cn.videos.length > 0) {
+                            cn.videos.forEach((v: any) => {
+                                allVideos.push({
+                                    ...v,
+                                    courseId: c._id,
+                                    courseTitle: c.title,
+                                    nodeTitle: cn.title,
+                                });
+                            });
+                        }
+                    });
+
+                    return {
+                        _id: c._id,
+                        title: c.title,
+                        description: c.description,
+                        mentorTags: c.mentorTags || [],
+                        ptsGroupCode: c.ptsGroupCode || '',
+                        mtsGroupCode: c.mtsGroupCode || '',
+                        videos: allVideos,
+                        taskCards: Array.isArray(c.taskCards) && c.taskCards.length > 0
+                            ? [...c.taskCards].sort((a: any, b: any) => (a.order || 0) - (b.order || 0))
+                            : [],
+                    };
+                })
+            );
+        }
 
         // Fetch any pending student break or reorder requests
         const pendingBreakRequest = await MentorshipRequest.findOne({
@@ -130,6 +191,7 @@ export const getDailyTaskData = async (req: AuthRequest, res: Response): Promise
                 logs,
                 taskProgress,
                 subscribedCourses: populatedCourses,
+                taskCardGroup: activeGroupInfo,
                 assignedMentor: user?.assignedMentor ? {
                     _id: (user.assignedMentor as any)._id,
                     name: (user.assignedMentor as any).name,
@@ -204,35 +266,76 @@ export const getRoadmapData = async (req: AuthRequest, res: Response): Promise<v
         const track = (req.query.track as string) || 'GS';
         const customOrder: string[] = user.mentorshipCourseOrder || [];
 
-        // 1. Identify enrolled / purchased courses and tags from student profile
-        const purchasedTags = (user.purchasedMentorTags || []).map((t: string) => t.trim().toUpperCase());
-        const enrolledCourseIds = [
-            ...(user.purchasedCourses || []),
-            ...(user.enrolledCourses || []),
-        ];
-
-        let courseQuery: any = { level: 'course', isPublished: true };
-        if (enrolledCourseIds.length > 0 || purchasedTags.length > 0) {
-            const conditions: any[] = [];
-            if (enrolledCourseIds.length > 0) {
-                conditions.push({ _id: { $in: enrolledCourseIds } });
-            }
-            if (purchasedTags.length > 0) {
-                conditions.push({
-                    $or: [
-                        { mentorTags: { $in: purchasedTags } },
-                        { title: { $in: user.purchasedMentorTags || [] } },
-                    ],
-                });
-            }
-            courseQuery.$or = conditions;
+        // 1. Identify active TaskCardGroup for student
+        let assignedGroup: any = null;
+        if (user.activeTaskCardGroupId) {
+            assignedGroup = await TaskCardGroup.findById(user.activeTaskCardGroupId)
+                .populate({ path: 'sets.setId', model: 'TaskCardSet' })
+                .lean();
+        } else if (Array.isArray(user.purchasedTaskCardGroups) && user.purchasedTaskCardGroups.length > 0) {
+            assignedGroup = await TaskCardGroup.findById(user.purchasedTaskCardGroups[0])
+                .populate({ path: 'sets.setId', model: 'TaskCardSet' })
+                .lean();
+        } else {
+            assignedGroup = await TaskCardGroup.findOne({ isPublished: true })
+                .populate({ path: 'sets.setId', model: 'TaskCardSet' })
+                .sort({ createdAt: -1 })
+                .lean();
         }
 
-        let allUserCourses = await CourseNode.find(courseQuery).lean();
+        let allUserCourses: any[] = [];
 
-        // Always fallback to published root courses so student never has an empty/broken roadmap
+        if (assignedGroup && Array.isArray(assignedGroup.sets) && assignedGroup.sets.length > 0) {
+            const sortedSets = assignedGroup.sets
+                .filter((item: any) => item.setId)
+                .sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
+
+            allUserCourses = sortedSets.map((item: any) => {
+                const s = item.setId;
+                return {
+                    _id: s._id,
+                    title: s.title,
+                    description: s.description || '',
+                    mentorTags: [s.track || 'GS', s.title],
+                    taskCards: s.cards || [],
+                    videos: [],
+                    isTaskCardSet: true,
+                    groupId: assignedGroup._id,
+                    order: item.order,
+                };
+            });
+        }
+
+        // Fallback to enrolled/purchased courses if no TaskCardGroup sets found
         if (allUserCourses.length === 0) {
-            allUserCourses = await CourseNode.find({ level: 'course', isPublished: true }).lean();
+            const purchasedTags = (user.purchasedMentorTags || []).map((t: string) => t.trim().toUpperCase());
+            const enrolledCourseIds = [
+                ...(user.purchasedCourses || []),
+                ...(user.enrolledCourses || []),
+            ];
+
+            let courseQuery: any = { level: 'course', isPublished: true };
+            if (enrolledCourseIds.length > 0 || purchasedTags.length > 0) {
+                const conditions: any[] = [];
+                if (enrolledCourseIds.length > 0) {
+                    conditions.push({ _id: { $in: enrolledCourseIds } });
+                }
+                if (purchasedTags.length > 0) {
+                    conditions.push({
+                        $or: [
+                            { mentorTags: { $in: purchasedTags } },
+                            { title: { $in: user.purchasedMentorTags || [] } },
+                        ],
+                    });
+                }
+                courseQuery.$or = conditions;
+            }
+
+            allUserCourses = await CourseNode.find(courseQuery).lean();
+
+            if (allUserCourses.length === 0) {
+                allUserCourses = await CourseNode.find({ level: 'course', isPublished: true }).lean();
+            }
         }
 
         // 2. Track matching helper
@@ -934,7 +1037,7 @@ export const sendStudentChat = async (req: AuthRequest, res: Response): Promise<
 export const saveTaskProgress = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const studentId = req.user?._id;
-        const { tag, dayNumber, taskType, completed, isPartial, notesText, mainsAnswerFileUrl, courseId } = req.body;
+        const { tag, dayNumber, taskType, completed, isPartial, notesText, mainsAnswerFileUrl, courseId, taskCardGroupId, taskCardSetId } = req.body;
 
         if (!studentId) {
             res.status(401).json({ success: false, message: 'Unauthorized' });
@@ -963,6 +1066,8 @@ export const saveTaskProgress = async (req: AuthRequest, res: Response): Promise
             mainsAnswerFileUrl,
         };
         if (courseId) updateData.courseId = courseId;
+        if (taskCardGroupId) updateData.taskCardGroupId = taskCardGroupId;
+        if (taskCardSetId) updateData.taskCardSetId = taskCardSetId;
 
         const progress = await MentorshipTaskProgress.findOneAndUpdate(
             {

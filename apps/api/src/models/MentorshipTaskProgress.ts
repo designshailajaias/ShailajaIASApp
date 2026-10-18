@@ -5,6 +5,8 @@ export type TaskType = 'watch' | 'notes' | 'test' | 'upload' | 'overall';
 export interface IMentorshipTaskProgress extends Document {
     userId: Types.ObjectId;
     courseId?: Types.ObjectId;
+    taskCardGroupId?: Types.ObjectId;
+    taskCardSetId?: Types.ObjectId;
     tag: string;
     dayNumber: number;
     taskType: TaskType;
@@ -30,6 +32,16 @@ const MentorshipTaskProgressSchema = new Schema<IMentorshipTaskProgress>(
         courseId: {
             type: Schema.Types.ObjectId,
             ref: 'CourseNode',
+            index: true,
+        },
+        taskCardGroupId: {
+            type: Schema.Types.ObjectId,
+            ref: 'TaskCardGroup',
+            index: true,
+        },
+        taskCardSetId: {
+            type: Schema.Types.ObjectId,
+            ref: 'TaskCardSet',
             index: true,
         },
         tag: {

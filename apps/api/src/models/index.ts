@@ -26,4 +26,6 @@ export { MentorChat, type IMentorChat } from './MentorChat.js';export { MasterTa
 export { MentorBroadcast, type IMentorBroadcast } from './MentorBroadcast.js';
 export { MentorNote, type IMentorNote, type IMentorSessionNote } from './MentorNote.js';
 export { MentorshipRequest, type IMentorshipRequest, type MentorshipRequestType, type MentorshipRequestStatus } from './MentorshipRequest.js';
+export { TaskCardSet, type ITaskCardSet, type ITaskCard } from './TaskCardSet.js';
+export { TaskCardGroup, type ITaskCardGroup, type IGroupSetItem } from './TaskCardGroup.js';
 

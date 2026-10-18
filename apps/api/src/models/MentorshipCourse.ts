@@ -13,6 +13,7 @@ export interface IMentorshipCourse extends Document {
     bundleNote?: string;
     description: string;
     mentorTags?: string[];
+    taskCardGroupId?: mongoose.Types.ObjectId;
     defaultMentor?: mongoose.Types.ObjectId;
     assignedMentors?: mongoose.Types.ObjectId[];
     order: number;
@@ -78,6 +79,10 @@ const MentorshipCourseSchema = new Schema<IMentorshipCourse>(
         mentorTags: {
             type: [String],
             default: [],
+        },
+        taskCardGroupId: {
+            type: Schema.Types.ObjectId,
+            ref: 'TaskCardGroup',
         },
         defaultMentor: {
             type: Schema.Types.ObjectId,

@@ -27,6 +27,7 @@ interface MentorshipCourse {
     bundleNote?: string;
     description: string;
     mentorTags?: string[];
+    taskCardGroupId?: any;
     order: number;
     isPublished: boolean;
 }
@@ -35,6 +36,7 @@ export default function AdminMentorshipPage() {
     const { token } = useAuth();
     const [courses, setCourses] = useState<MentorshipCourse[]>([]);
     const [masterTagsList, setMasterTagsList] = useState<MasterTag[]>([]);
+    const [taskCardGroupsList, setTaskCardGroupsList] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     // Modal state for Create / Edit
@@ -55,6 +57,7 @@ export default function AdminMentorshipPage() {
         bundleNote: '',
         description: '',
         mentorTags: [] as string[],
+        taskCardGroupId: '',
         order: 0,
         isPublished: true,
     });
@@ -62,7 +65,20 @@ export default function AdminMentorshipPage() {
     useEffect(() => {
         fetchCourses();
         fetchMasterTags();
+        fetchTaskCardGroups();
     }, [token]);
+
+    const fetchTaskCardGroups = async () => {
+        try {
+            const headers: Record<string, string> = {};
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+            const res = await fetch(`${API_URL}/api/task-card-groups`, { headers });
+            const data = await res.json();
+            if (data.success) setTaskCardGroupsList(data.data || []);
+        } catch (err) {
+            console.error('Fetch task card groups error:', err);
+        }
+    };
 
     const fetchMasterTags = async () => {
         try {
@@ -118,6 +134,7 @@ export default function AdminMentorshipPage() {
             bundleNote: '',
             description: '',
             mentorTags: [],
+            taskCardGroupId: '',
             order: courses.length + 1,
             isPublished: true,
         });
@@ -126,6 +143,7 @@ export default function AdminMentorshipPage() {
 
     const handleOpenEditModal = (course: MentorshipCourse) => {
         setEditingCourse(course);
+        const groupId = course.taskCardGroupId?._id || course.taskCardGroupId || '';
         setFormData({
             title: course.title,
             tagline: course.tagline,
@@ -139,6 +157,7 @@ export default function AdminMentorshipPage() {
             bundleNote: course.bundleNote || '',
             description: course.description,
             mentorTags: course.mentorTags || [],
+            taskCardGroupId: groupId ? groupId.toString() : '',
             order: course.order || 0,
             isPublished: course.isPublished,
         });
@@ -166,6 +185,7 @@ export default function AdminMentorshipPage() {
             bundleNote: formData.bundleNote,
             description: formData.description,
             mentorTags: formData.mentorTags,
+            taskCardGroupId: formData.taskCardGroupId || null,
             order: Number(formData.order),
             isPublished: formData.isPublished,
         };
@@ -335,6 +355,14 @@ export default function AdminMentorshipPage() {
                                     ))}
                                 </div>
 
+                                {course.taskCardGroupId && (
+                                    <div className="pt-1">
+                                        <span className="text-[11px] bg-indigo-50 text-indigo-900 px-3 py-1 rounded-lg font-bold border border-indigo-200 inline-flex items-center gap-1.5 shadow-2xs">
+                                            🗂️ Curriculum Group: {typeof course.taskCardGroupId === 'object' ? course.taskCardGroupId.title : 'Linked Group'}
+                                        </span>
+                                    </div>
+                                )}
+
                                 {course.mentorTags && course.mentorTags.length > 0 && (
                                     <div className="flex flex-wrap gap-1 pt-1">
                                         <span className="text-[10px] font-bold text-amber-800 self-center mr-1">🏷️ Master Tags:</span>
@@ -475,38 +503,30 @@ export default function AdminMentorshipPage() {
                                 />
                             </div>
 
-                             <div className="space-y-1.5">
+                             <div className="space-y-1.5 p-3.5 bg-indigo-50/60 border border-indigo-200 rounded-xl">
                                  <div className="flex items-center justify-between">
-                                     <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                                         🏷️ Assign Centralized Master Mentorship Tags (Purchasing Unlocks These Tags)
+                                     <label className="text-xs font-bold text-indigo-950 uppercase tracking-wider flex items-center gap-1.5">
+                                         <span>🗂️</span> Linked Task Card Group (Curriculum to Sell)
                                      </label>
-                                     <a href="/admin/master-tags" target="_blank" className="text-[11px] text-amber-600 font-bold hover:underline">
-                                         + Manage Repository
-                                     </a>
+                                     <Link href="/admin/task-cards" target="_blank" className="text-[11px] text-indigo-700 font-bold hover:underline">
+                                         + Manage Groups ↗
+                                     </Link>
                                  </div>
-                                 <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex flex-wrap gap-2 max-h-36 overflow-y-auto">
-                                     {masterTagsList.length === 0 ? (
-                                         <p className="text-xs text-slate-400">No master tags found in repository.</p>
-                                     ) : (
-                                         masterTagsList.map((tag) => {
-                                             const selected = formData.mentorTags.includes(tag.code);
-                                             return (
-                                                 <button
-                                                     type="button"
-                                                     key={tag._id}
-                                                     onClick={() => toggleMasterTag(tag.code)}
-                                                     className={`px-3 py-1 rounded-full text-xs font-bold transition-all border ${
-                                                         selected
-                                                             ? 'bg-amber-600 text-white border-amber-600 shadow-xs'
-                                                             : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'
-                                                     }`}
-                                                 >
-                                                     {selected ? '✓ ' : '+ '}#{tag.code} ({tag.title})
-                                                 </button>
-                                             );
-                                         })
-                                     )}
-                                 </div>
+                                 <p className="text-[11px] text-slate-500">
+                                     Select the Task Card Group that will be automatically assigned to students purchasing this mentorship card.
+                                 </p>
+                                 <select
+                                     value={formData.taskCardGroupId}
+                                     onChange={(e) => setFormData({ ...formData, taskCardGroupId: e.target.value })}
+                                     className="w-full px-3 py-2 text-xs border border-indigo-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-900 bg-white"
+                                 >
+                                     <option value="">-- No Task Card Group Linked (Select a Group) --</option>
+                                     {taskCardGroupsList.map((g) => (
+                                         <option key={g._id} value={g._id}>
+                                             {g.title} ({g.totalSets} sets · {g.totalCards} study cards)
+                                         </option>
+                                     ))}
+                                 </select>
                              </div>
 
                              <div className="space-y-1">

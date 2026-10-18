@@ -436,3 +436,75 @@ export const getTestsCatalog = async (req: Request, res: Response): Promise<void
     }
 };
 
+// @desc    Get catalog of all videos across all courses and topics for task card picker
+// @route   GET /api/courses/videos-catalog
+// @access  Private/Admin
+export const getVideosCatalog = async (_req: Request, res: Response): Promise<void> => {
+    try {
+        const rootCourses = await CourseNode.find({ level: 'course' }).sort({ order: 1, title: 1 }).lean();
+        const allNodes = await CourseNode.find({}).sort({ order: 1 }).lean();
+
+        // Create a fast lookup map for nodes
+        const nodeMap = new Map<string, any>();
+        allNodes.forEach((node) => nodeMap.set(node._id.toString(), node));
+
+        // Find root course for any node by walking up parent pointers
+        const getRootCourse = (nodeId: string): any => {
+            let current = nodeMap.get(nodeId);
+            while (current && current.parent) {
+                const parent = nodeMap.get(current.parent.toString());
+                if (!parent) break;
+                current = parent;
+            }
+            return current;
+        };
+
+        const videosList: any[] = [];
+
+        allNodes.forEach((node: any) => {
+            if (Array.isArray(node.videos) && node.videos.length > 0) {
+                const root = getRootCourse(node._id.toString());
+                node.videos.forEach((v: any, vIdx: number) => {
+                    videosList.push({
+                        _id: v._id ? v._id.toString() : `${node._id}_${vIdx}`,
+                        courseId: root ? root._id : node._id,
+                        courseTitle: root ? root.title : node.title,
+                        topicId: node._id,
+                        topicTitle: node.title,
+                        videoIndex: vIdx,
+                        title: v.title || `Video #${vIdx + 1}`,
+                        description: v.description || '',
+                        videoProvider: v.videoProvider || 'youtube',
+                        videoUrl: v.videoUrl || '',
+                        notesText: v.notesText || '',
+                        pdfFiles: v.pdfFiles || [],
+                        prelimsQuizId: v.prelimsQuizId || null,
+                        prelimsDiscussionVideoUrl: v.prelimsDiscussionVideoUrl || '',
+                        prelimsDiscussionVideoProvider: v.prelimsDiscussionVideoProvider || 'youtube',
+                        mainsPracticeTestId: v.mainsPracticeTestId || null,
+                        mainsQuestionText: v.mainsQuestionText || '',
+                        mainsModelAnswer: v.mainsModelAnswer || '',
+                        mainsDiscussionVideoUrl: v.mainsDiscussionVideoUrl || '',
+                        mainsDiscussionVideoProvider: v.mainsDiscussionVideoProvider || 'youtube',
+                        helpContactInfo: v.helpContactInfo || '',
+                        faqs: v.faqs || [],
+                    });
+                });
+            }
+        });
+
+        res.json({
+            success: true,
+            data: {
+                totalVideos: videosList.length,
+                courses: rootCourses.map((c) => ({ _id: c._id, title: c.title })),
+                videos: videosList,
+            },
+        });
+    } catch (error) {
+        console.error('getVideosCatalog error:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+};
+
+

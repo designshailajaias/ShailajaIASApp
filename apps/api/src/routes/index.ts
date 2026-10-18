@@ -25,4 +25,6 @@ export { default as mentorshipDashboardRoutes } from './mentorshipDashboard.rout
 export { default as mentorshipStudentRoutes } from './mentorshipStudent.routes.js';
 export { default as mentorPortalRoutes } from './mentorPortal.routes.js';
 export { default as masterTagRoutes } from './masterTag.routes.js';
+export { default as taskCardSetRoutes } from './taskCardSet.routes.js';
+export { default as taskCardGroupRoutes } from './taskCardGroup.routes.js';
 

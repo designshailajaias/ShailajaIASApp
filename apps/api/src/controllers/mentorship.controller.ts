@@ -66,12 +66,16 @@ const DEFAULT_COURSES = [
 // @access  Public
 export const getMentorshipCourses = async (_req: Request, res: Response): Promise<void> => {
     try {
-        let courses = await MentorshipCourse.find({ isPublished: true }).sort({ order: 1, createdAt: -1 });
+        let courses = await MentorshipCourse.find({ isPublished: true })
+            .populate('taskCardGroupId', 'title description')
+            .sort({ order: 1, createdAt: -1 });
 
         // Auto seed default courses if collection is empty
         if (courses.length === 0) {
             await MentorshipCourse.insertMany(DEFAULT_COURSES);
-            courses = await MentorshipCourse.find({ isPublished: true }).sort({ order: 1, createdAt: -1 });
+            courses = await MentorshipCourse.find({ isPublished: true })
+                .populate('taskCardGroupId', 'title description')
+                .sort({ order: 1, createdAt: -1 });
         }
 
         res.json({
@@ -89,11 +93,15 @@ export const getMentorshipCourses = async (_req: Request, res: Response): Promis
 // @access  Private/Admin
 export const getAdminMentorshipCourses = async (_req: Request, res: Response): Promise<void> => {
     try {
-        let courses = await MentorshipCourse.find({}).sort({ order: 1, createdAt: -1 });
+        let courses = await MentorshipCourse.find({})
+            .populate('taskCardGroupId', 'title description')
+            .sort({ order: 1, createdAt: -1 });
 
         if (courses.length === 0) {
             await MentorshipCourse.insertMany(DEFAULT_COURSES);
-            courses = await MentorshipCourse.find({}).sort({ order: 1, createdAt: -1 });
+            courses = await MentorshipCourse.find({})
+                .populate('taskCardGroupId', 'title description')
+                .sort({ order: 1, createdAt: -1 });
         }
 
         res.json({
@@ -124,6 +132,7 @@ export const createMentorshipCourse = async (req: Request, res: Response): Promi
             bundleNote,
             description,
             mentorTags,
+            taskCardGroupId,
             order,
             isPublished,
         } = req.body;
@@ -146,6 +155,7 @@ export const createMentorshipCourse = async (req: Request, res: Response): Promi
             bundleNote,
             description,
             mentorTags: Array.isArray(mentorTags) ? mentorTags : [],
+            taskCardGroupId: taskCardGroupId || undefined,
             order: order ?? 0,
             isPublished: isPublished ?? true,
             createdBy: (req as any).user?._id,

@@ -1802,7 +1802,32 @@ Admin creates content
      - **Migration Automation**: Created `scripts/migrate-to-cloud.sh` and `scripts/update-db-urls-to-s3.ts` to export local MongoDB (31 collections), restore to MongoDB Atlas, upload 54MB of local files to S3, and update database URL pointers to S3/CloudFront.
      - **CI/CD & Environment Specs**: Created `.github/workflows/deploy.yml` for automated linting, typechecking, and ECR deployment, along with `.env.example` templates for both API and Client.
      - **Full Plan Document**: Documented in `cloud_migration_plan.md`.
-- **Verification:** Both API (`tsc`) and Client (`npx tsc --noEmit`) compile with 0 errors.
+### Session: 2026-10-18 (Task Cards Cross-Course Revamp, Group Bundling & Mentorship Integration)
+- **Who:** AI (Antigravity)
+- **Goal:** Revamp `/admin/task-cards` and Mentorship product bundling so that:
+  1. Admins can create a task card by picking **any video from any course** (via a cross-course video catalog), as well as inserting PTS and MTS tests.
+  2. Cards are organized into a named **Task Card Set** (e.g. "Polity Foundation - 25 Days").
+  3. Multiple Task Card Sets can be combined in any order into a named **Task Card Group** (e.g. "UPSC 2027 Integrated Mentorship Program").
+  4. The Group Name is linked in the Mentorship Card (`/admin/mentorship`) to sell the mentorship module.
+  5. The legacy logic of creating master tags to add in mentorship modules has been discarded.
+  6. Subscribed card groups reflect directly in the Student Mentorship Dashboard (`/mentorship/dashboard`) in both the **Daily Task Cards** carousel and **Roadmap** tabs.
+  7. Strict Planning & User Approval rule codified in `.cursorrules` and `AGENTS.md`.
+- **Backend Infrastructure (`apps/api`):**
+  - **Models Created**: `TaskCardSet` (`models/TaskCardSet.ts`) with polymorphic cards (`video`, `pts_test`, `mts_test`, `custom`), `TaskCardGroup` (`models/TaskCardGroup.ts`) combining multiple ordered sets.
+  - **Models Updated**: `MentorshipCourse.ts` (added `taskCardGroupId`), `User.ts` (added `purchasedTaskCardGroups`, `activeTaskCardGroupId`), `MentorshipTaskProgress.ts` (added `taskCardGroupId`, `taskCardSetId`).
+  - **Endpoints Added**:
+    - `GET /api/courses/videos-catalog`: Cross-course catalog of all videos with parent course/topic resolution.
+    - `GET/POST /api/task-card-sets` and `GET/PUT/DELETE /api/task-card-sets/:id`: Full CRUD for Task Card Sets.
+    - `GET/POST /api/task-card-groups` and `GET/PUT/DELETE /api/task-card-groups/:id`: Full CRUD for Task Card Groups with mentorship course usage tracking.
+  - **Purchase Flow Updated**: `purchase.controller.ts` automatically assigns `mc.taskCardGroupId` to `user.purchasedTaskCardGroups` and `activeTaskCardGroupId` on mentorship purchase.
+  - **Student Dashboard Updated**: `mentorshipStudent.controller.ts` (`getDailyTaskData` & `getRoadmapData`) dynamically queries from student's assigned `TaskCardGroup`, with sets forming the roadmap modules with real-time completion tracking.
+- **Frontend Upgrades (`apps/client`):**
+  - **`/admin/task-cards`**: Built dual-tab workspace:
+    - **Tab 1 (Task Card Sets)**: Named set editor with `+ Add Video from Any Course` (interactive cross-course video picker), `+ Insert PTS Test Card`, `+ Insert MTS Test Card`, and drag-and-drop/order manipulation.
+    - **Tab 2 (Task Card Groups)**: Named group builder, combining multiple sets in any order with live total study days/card counters and linked mentorship course badges.
+  - **`/admin/mentorship`**: Replaced legacy master tags selector with **Linked Task Card Group** dropdown, displaying total sets and cards to sell.
+  - **`.cursorrules` & `AGENTS.md`**: Enforced strict planning and user approval protocol before any file modifications.
+- **Verification:** Both API (`tsc`) and Client (`npx tsc --noEmit`) compile with 0 errors. Full Turbo `check-types:all` passes.
 
 ### Session: 2026-04-18 (Project Analysis & Diary Creation)
 - **Who:** AI (Antigravity) — Initial comprehensive analysis

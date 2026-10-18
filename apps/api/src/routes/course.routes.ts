@@ -10,6 +10,7 @@ import {
     getCourseTaskCards,
     updateCourseTaskCards,
     getTestsCatalog,
+    getVideosCatalog,
 } from '../controllers/course.controller.js';
 import { protect, adminOnly } from '../middlewares/auth.middleware.js';
 
@@ -24,6 +25,11 @@ router.get('/', getCourses);
 // @desc    Get catalog of PTS and MTS tests for sequencer dropdowns
 // @access  Private/Admin
 router.get('/tests-catalog', protect, adminOnly, getTestsCatalog);
+
+// @route   GET /api/courses/videos-catalog
+// @desc    Get catalog of all videos across all courses for cross-course task card creation
+// @access  Private/Admin
+router.get('/videos-catalog', protect, adminOnly, getVideosCatalog);
 
 // @route   GET /api/courses/tree/:id?
 // @desc    Get full course tree for root node or all

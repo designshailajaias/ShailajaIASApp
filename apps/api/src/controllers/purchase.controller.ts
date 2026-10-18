@@ -30,10 +30,18 @@ export const purchaseItem = async (req: AuthRequest, res: Response): Promise<voi
 
             if (itemId) {
                 const mc = await MentorshipCourse.findById(itemId);
-                if (mc && mc.mentorTags && mc.mentorTags.length > 0) {
-                    const existing = new Set(user.purchasedMentorTags || []);
-                    mc.mentorTags.forEach((t) => existing.add(t));
-                    user.purchasedMentorTags = Array.from(existing);
+                if (mc) {
+                    if (mc.taskCardGroupId) {
+                        const existingGroups = new Set((user.purchasedTaskCardGroups || []).map((id) => id.toString()));
+                        existingGroups.add(mc.taskCardGroupId.toString());
+                        user.purchasedTaskCardGroups = Array.from(existingGroups) as any;
+                        user.activeTaskCardGroupId = mc.taskCardGroupId as any;
+                    }
+                    if (mc.mentorTags && mc.mentorTags.length > 0) {
+                        const existing = new Set(user.purchasedMentorTags || []);
+                        mc.mentorTags.forEach((t) => existing.add(t));
+                        user.purchasedMentorTags = Array.from(existing);
+                    }
                 }
             }
 

@@ -20,6 +20,8 @@ export interface IUser extends Document {
     purchasedMtsGroups?: mongoose.Types.ObjectId[];
     purchasedCourseGroups?: mongoose.Types.ObjectId[];
     purchasedCourses?: mongoose.Types.ObjectId[];
+    purchasedTaskCardGroups?: mongoose.Types.ObjectId[];
+    activeTaskCardGroupId?: mongoose.Types.ObjectId;
     mentorshipPurchasedAt?: Date;
     // Mentor-specific fields
     assignedMtsGroups: mongoose.Types.ObjectId[];
@@ -124,6 +126,16 @@ const UserSchema = new Schema<IUser>(
                 ref: 'CourseNode',
             },
         ],
+        purchasedTaskCardGroups: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'TaskCardGroup',
+            },
+        ],
+        activeTaskCardGroupId: {
+            type: Schema.Types.ObjectId,
+            ref: 'TaskCardGroup',
+        },
         mentorshipPurchasedAt: {
             type: Date,
         },
