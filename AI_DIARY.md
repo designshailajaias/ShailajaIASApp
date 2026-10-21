@@ -1802,6 +1802,21 @@ Admin creates content
      - **Migration Automation**: Created `scripts/migrate-to-cloud.sh` and `scripts/update-db-urls-to-s3.ts` to export local MongoDB (31 collections), restore to MongoDB Atlas, upload 54MB of local files to S3, and update database URL pointers to S3/CloudFront.
      - **CI/CD & Environment Specs**: Created `.github/workflows/deploy.yml` for automated linting, typechecking, and ECR deployment, along with `.env.example` templates for both API and Client.
      - **Full Plan Document**: Documented in `cloud_migration_plan.md`.
+
+### Session: 2026-10-21 — Bugsheet 3 Failures Resolution (Admin Portal & User Webpage)
+- **Who:** AI (Antigravity)
+- **What:** Addressed all failed status test cases across Sheet 1 (Admin Portal) and Sheet 2 (User webpage) from `Bugsheet 3.xlsx`:
+  1. **Admin Quizzes Module (Rows 26, 47–49)**: Added interactive tag pill management (chips + enter key + remove) and payload integration in both Quiz Create (`/admin/quizzes/new`) and Quiz Edit (`/admin/quizzes/[id]`). Enforced character limits with live character counters: Question (2000 chars), Options (500 chars), Explanation (3000 chars). Added clean `—` fallback in admin quizzes table.
+  2. **Admin Resources Module (Row 33)**: Category tag field is disabled until a category is selected. Once selected, populates with category predefined tags plus a `+ Add Custom Tag` option with 50-character limit.
+  3. **Admin Layout Responsiveness (Row 34)**: Added `flex-shrink-0` to sidebar and updated admin container to fluid max-width (`max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 min-w-0 overflow-x-hidden`) to eliminate horizontal scroll overflow.
+  4. **Admin Courses Module (Rows 36–44)**: Replaced native browser `confirm()` with custom modal confirmation dialog for deleting courses and course bundles; added `← Back to Course Groups` button in group view header; enforced character limits with counters on Group Title (150 chars), Description (1000 chars), Standalone Price (0–999,999), Intro Video URL (300 chars), PTS & MTS group codes (50 chars), and Root Course title (150 chars).
+  5. **Admin Articles Sorting (Row 46)**: Updated `GET /api/articles` backend controller to accept `sortBy` (`title` | `date`) and `sortOrder` (`asc` | `desc`); made Title and Date table column headers in `/admin/articles` clickable sort toggles with visual arrow indicators.
+  6. **Breadcrumbs Navigation (Sheet 2, Rows 8, 11, 15)**: Added instantaneous window scroll reset to top on pathname change; dynamically inserted `Current Affairs` parent crumb for all current affairs submodules; replaced raw 24-character MongoDB ObjectIDs with "Course Details".
+  7. **Prelims Practice Test (Sheet 2, Row 10)**: Made bottom navigation controls (`Previous`, `Clear Response`, `Mark for Review`, `Save/Skip & Next`) sticky (`sticky bottom-4 bg-white/95 backdrop-blur-md shadow-lg`) to prevent excessive scrolling on long questions.
+  8. **Daily Quiz Controls (Sheet 2, Row 14)**: Added disabled state (`disabled:opacity-40 disabled:cursor-not-allowed`) to Previous and Next buttons when reaching start/end bounds and no adjacent dates exist.
+  9. **Video Courses (Sheet 2, Rows 16 & 17)**: Standardized sheet/tab section title typography to `text-lg font-bold text-slate-900 font-headline`; added state reset (`selectedAnswers`, `currentQuestionIdx`, `quizSubmitted`) when switching between Learn Mode and Test Mode.
+- **Verification:** Both API (`tsc`) and Client (`tsc`) compile with 0 errors.
+
 ### Session: 2026-10-18 (Task Cards Cross-Course Revamp, Group Bundling & Mentorship Integration)
 - **Who:** AI (Antigravity)
 - **Goal:** Revamp `/admin/task-cards` and Mentorship product bundling so that:

@@ -88,6 +88,7 @@ export default function AdminResourcesPage() {
     const [itemTitle, setItemTitle] = useState('');
     const [itemCat, setItemCat] = useState('');
     const [itemTag, setItemTag] = useState('');
+    const [customTagInput, setCustomTagInput] = useState('');
     const [itemDesc, setItemDesc] = useState('');
     const [itemOrder, setItemOrder] = useState(0);
     const [itemPublished, setItemPublished] = useState(true);
@@ -275,6 +276,7 @@ export default function AdminResourcesPage() {
         setItemTitle('');
         setItemCat('');
         setItemTag('');
+        setCustomTagInput('');
         setItemDesc('');
         setItemOrder(0);
         setItemPublished(true);
@@ -290,6 +292,7 @@ export default function AdminResourcesPage() {
             setItemTitle(item.title);
             setItemCat(typeof item.category === 'string' ? item.category : item.category._id);
             setItemTag(item.tag);
+            setCustomTagInput('');
             setItemDesc(item.description || '');
             setItemOrder(item.order);
             setItemPublished(item.isPublished);
@@ -305,7 +308,9 @@ export default function AdminResourcesPage() {
         setItemError('');
         if (!itemTitle.trim()) { setItemError('Title is required'); return; }
         if (!itemCat) { setItemError('Category is required'); return; }
-        if (!itemTag.trim()) { setItemError('Tag is required'); return; }
+
+        const finalTag = (itemTag === '__custom__' ? customTagInput.trim() : itemTag.trim());
+        if (!finalTag) { setItemError('Tag is required'); return; }
         if (!editItemId && !pdfFile) { setItemError('Please upload a PDF'); return; }
 
         setItemSubmitting(true);
@@ -313,7 +318,7 @@ export default function AdminResourcesPage() {
             const formData = new FormData();
             formData.append('title', itemTitle.trim());
             formData.append('category', itemCat);
-            formData.append('tag', itemTag.trim());
+            formData.append('tag', finalTag);
             formData.append('description', itemDesc.trim());
             formData.append('order', itemOrder.toString());
             formData.append('isPublished', String(itemPublished));
@@ -365,8 +370,11 @@ export default function AdminResourcesPage() {
         }
     };
 
-    // Get tags for the currently selected category in the item form
-    const selectedCatTags = categories.find(c => c._id === itemCat)?.predefinedTags || [];
+    // Get tags for the currently selected category in the item form (fallback to preset tags)
+    const activeCategory = categories.find(c => c._id === itemCat);
+    const selectedCatTags = (activeCategory?.predefinedTags && activeCategory.predefinedTags.length > 0)
+        ? activeCategory.predefinedTags
+        : PRESET_TAGS;
 
     return (
         <div className="p-8">
@@ -818,27 +826,55 @@ export default function AdminResourcesPage() {
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Tag *</label>
-                                    {selectedCatTags.length > 0 ? (
+                                    {!itemCat ? (
                                         <select
-                                            value={itemTag}
-                                            onChange={e => setItemTag(e.target.value)}
-                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                            required
+                                            disabled
+                                            className="w-full px-4 py-2.5 border border-gray-200 bg-gray-50 text-gray-400 rounded-lg cursor-not-allowed text-sm"
                                         >
-                                            <option value="">Select tag</option>
-                                            {selectedCatTags.map(t => (
-                                                <option key={t} value={t}>{t}</option>
-                                            ))}
+                                            <option>Select a category first</option>
                                         </select>
                                     ) : (
-                                        <input
-                                            type="text"
-                                            value={itemTag}
-                                            onChange={e => setItemTag(e.target.value)}
-                                            placeholder="e.g., GS1"
-                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                            required
-                                        />
+                                        <div className="space-y-2">
+                                            <select
+                                                value={itemTag}
+                                                onChange={e => setItemTag(e.target.value)}
+                                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                                required
+                                            >
+                                                <option value="">Select tag</option>
+                                                {selectedCatTags.map(t => (
+                                                    <option key={t} value={t}>{t}</option>
+                                                ))}
+                                                {itemTag && !selectedCatTags.includes(itemTag) && itemTag !== '__custom__' && (
+                                                    <option value={itemTag}>{itemTag}</option>
+                                                )}
+                                                <option value="__custom__">+ Add Custom Tag</option>
+                                            </select>
+                                            {itemTag === '__custom__' && (
+                                                <div className="flex gap-2 items-center mt-2">
+                                                    <input
+                                                        type="text"
+                                                        value={customTagInput}
+                                                        onChange={e => setCustomTagInput(e.target.value)}
+                                                        placeholder="Enter custom tag (e.g., Prelims PYQ)"
+                                                        maxLength={50}
+                                                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            if (customTagInput.trim()) {
+                                                                setItemTag(customTagInput.trim());
+                                                                setCustomTagInput('');
+                                                            }
+                                                        }}
+                                                        className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold"
+                                                    >
+                                                        Apply
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
                                     )}
                                 </div>
                             </div>

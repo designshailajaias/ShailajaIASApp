@@ -119,7 +119,7 @@ function AdminLayoutContent({ children }: { children: ReactNode }) {
     return (
         <div className="min-h-screen bg-slate-100 flex">
             {/* Sidebar */}
-            <aside className="w-64 bg-slate-900 text-white flex flex-col">
+            <aside className="w-64 bg-slate-900 text-white flex flex-col flex-shrink-0">
                 {/* Logo */}
                 <div className="p-6 border-b border-slate-800">
                     <div className="flex items-center gap-3">
@@ -179,8 +179,8 @@ function AdminLayoutContent({ children }: { children: ReactNode }) {
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 overflow-auto">
-                <div className="max-w-[1600px] mx-auto w-full px-4 md:px-8 py-6">
+            <main className="flex-1 overflow-x-hidden overflow-y-auto min-w-0">
+                <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
                     {children}
                 </div>
             </main>

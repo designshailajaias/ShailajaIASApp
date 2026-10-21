@@ -69,6 +69,8 @@ export default function UnifiedCoursesAdminPage() {
     const [groupForm, setGroupForm] = useState<CourseGroupForm>({ ...emptyGroupForm });
     const [groupError, setGroupError] = useState('');
     const [groupSuccess, setGroupSuccess] = useState('');
+    const [deleteTarget, setDeleteTarget] = useState<{ id: string; title: string; type: 'course' | 'group' } | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         if (token) {
@@ -140,17 +142,39 @@ export default function UnifiedCoursesAdminPage() {
         }
     };
 
-    const deleteCourse = async (id: string) => {
-        if (!confirm('Are you sure? This will delete the course and all its subjects & chapters.')) return;
+    const confirmDeleteTarget = async () => {
+        if (!deleteTarget) return;
+        setIsDeleting(true);
         try {
-            const res = await fetch(`${API_URL}/api/courses/${id}`, {
-                method: 'DELETE',
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            if (res.ok) setCourses(courses.filter((c) => c._id !== id));
+            if (deleteTarget.type === 'course') {
+                const res = await fetch(`${API_URL}/api/courses/${deleteTarget.id}`, {
+                    method: 'DELETE',
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                if (res.ok) setCourses((prev) => prev.filter((c) => c._id !== deleteTarget.id));
+            } else {
+                const res = await fetch(`${API_URL}/api/course-groups/${deleteTarget.id}`, {
+                    method: 'DELETE',
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                const data = await res.json();
+                if (data.success) setGroups((prev) => prev.filter((g) => g._id !== deleteTarget.id));
+            }
         } catch (err) {
-            console.error('Delete course error:', err);
+            console.error('Delete target error:', err);
+        } finally {
+            setIsDeleting(false);
+            setDeleteTarget(null);
         }
+    };
+
+    const deleteCourse = (id: string, title?: string) => {
+        const c = courses.find((item) => item._id === id);
+        setDeleteTarget({
+            id,
+            title: title || c?.title || 'Course',
+            type: 'course',
+        });
     };
 
     // Group creation / editing
@@ -190,18 +214,13 @@ export default function UnifiedCoursesAdminPage() {
         }
     };
 
-    const handleDeleteGroup = async (id: string) => {
-        if (!confirm('Are you sure you want to delete this course group bundle?')) return;
-        try {
-            const res = await fetch(`${API_URL}/api/course-groups/${id}`, {
-                method: 'DELETE',
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            const data = await res.json();
-            if (data.success) setGroups((prev) => prev.filter((g) => g._id !== id));
-        } catch (err) {
-            console.error('Delete group error:', err);
-        }
+    const handleDeleteGroup = (id: string, title?: string) => {
+        const g = groups.find((item) => item._id === id);
+        setDeleteTarget({
+            id,
+            title: title || g?.title || 'Course Group',
+            type: 'group',
+        });
     };
 
     const toggleMasterTagSelection = (tagCode: string) => {
@@ -264,9 +283,20 @@ export default function UnifiedCoursesAdminPage() {
                     {isEditingGroup ? (
                         <div className="max-w-4xl mx-auto bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-6">
                             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                                <h2 className="text-lg font-bold text-slate-800">
-                                    {groupForm._id ? 'Edit Course Group Bundle' : 'Create New Course Group Bundle'}
-                                </h2>
+                                <div className="flex items-center gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsEditingGroup(false)}
+                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold transition-colors"
+                                        title="Back to Course Groups"
+                                    >
+                                        <span>←</span>
+                                        <span>Back to Course Groups</span>
+                                    </button>
+                                    <h2 className="text-lg font-bold text-slate-800">
+                                        {groupForm._id ? 'Edit Course Group Bundle' : 'Create New Course Group Bundle'}
+                                    </h2>
+                                </div>
                                 <button
                                     onClick={() => setIsEditingGroup(false)}
                                     className="text-xs text-slate-500 hover:text-slate-800 font-bold"
@@ -285,10 +315,12 @@ export default function UnifiedCoursesAdminPage() {
                                         type="text"
                                         value={groupForm.title}
                                         onChange={(e) => setGroupForm((p) => ({ ...p, title: e.target.value }))}
+                                        maxLength={150}
                                         className="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:outline-none"
                                         placeholder="e.g. GS Foundation Full Course Bundle 2027"
                                         required
                                     />
+                                    <p className="text-xs text-slate-400 mt-1 text-right">{groupForm.title.length}/150</p>
                                 </div>
 
                                 <div>
@@ -297,9 +329,11 @@ export default function UnifiedCoursesAdminPage() {
                                         rows={3}
                                         value={groupForm.description}
                                         onChange={(e) => setGroupForm((p) => ({ ...p, description: e.target.value }))}
+                                        maxLength={1000}
                                         className="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:outline-none"
                                         placeholder="Describe what subjects &amp; modules are included in this bundle..."
                                     />
+                                    <p className="text-xs text-slate-400 mt-1 text-right">{groupForm.description.length}/1000</p>
                                 </div>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -309,6 +343,8 @@ export default function UnifiedCoursesAdminPage() {
                                             type="number"
                                             value={groupForm.price || ''}
                                             onChange={(e) => setGroupForm((p) => ({ ...p, price: parseFloat(e.target.value) || 0 }))}
+                                            min={0}
+                                            max={999999}
                                             className="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:outline-none"
                                             placeholder="e.g. 14999"
                                         />
@@ -319,6 +355,7 @@ export default function UnifiedCoursesAdminPage() {
                                             type="url"
                                             value={groupForm.introVideoUrl}
                                             onChange={(e) => setGroupForm((p) => ({ ...p, introVideoUrl: e.target.value }))}
+                                            maxLength={300}
                                             className="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:outline-none"
                                             placeholder="https://youtube.com/watch?v=..."
                                         />
@@ -332,9 +369,11 @@ export default function UnifiedCoursesAdminPage() {
                                             type="text"
                                             value={groupForm.ptsGroupCode || ''}
                                             onChange={(e) => setGroupForm((p) => ({ ...p, ptsGroupCode: e.target.value }))}
+                                            maxLength={50}
                                             className="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:outline-none"
                                             placeholder="e.g. PTS-2026-01"
                                         />
+                                        <p className="text-xs text-slate-400 mt-1 text-right">{(groupForm.ptsGroupCode || '').length}/50</p>
                                     </div>
                                     <div>
                                         <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">MTS Group Code (Mains Test Series)</label>
@@ -342,9 +381,11 @@ export default function UnifiedCoursesAdminPage() {
                                             type="text"
                                             value={groupForm.mtsGroupCode || ''}
                                             onChange={(e) => setGroupForm((p) => ({ ...p, mtsGroupCode: e.target.value }))}
+                                            maxLength={50}
                                             className="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:outline-none"
                                             placeholder="e.g. MTS-2026-01"
                                         />
+                                        <p className="text-xs text-slate-400 mt-1 text-right">{(groupForm.mtsGroupCode || '').length}/50</p>
                                     </div>
                                 </div>
 
@@ -523,7 +564,7 @@ export default function UnifiedCoursesAdminPage() {
                                                 >
                                                     ✏️ Edit Group
                                                 </button>
-                                                <button onClick={() => handleDeleteGroup(g._id)} className="text-red-500 hover:underline">
+                                                <button onClick={() => handleDeleteGroup(g._id, g.title)} className="text-red-500 hover:underline">
                                                     🗑️ Delete
                                                 </button>
                                             </div>
@@ -600,7 +641,7 @@ export default function UnifiedCoursesAdminPage() {
                                             Manage Hierarchy &amp; Lectures ↗
                                         </Link>
                                         <button
-                                            onClick={() => deleteCourse(course._id)}
+                                            onClick={() => deleteCourse(course._id, course.title)}
                                             className="px-4 py-2 bg-red-50 text-red-700 hover:bg-red-100 text-xs font-bold rounded-xl transition-colors"
                                         >
                                             Delete
@@ -621,14 +662,18 @@ export default function UnifiedCoursesAdminPage() {
                 >
                     <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4" onClick={(e) => e.stopPropagation()}>
                         <h3 className="text-lg font-bold text-slate-800">Create Root Course</h3>
-                        <input
-                            type="text"
-                            value={newCourseTitle}
-                            onChange={(e) => setNewCourseTitle(e.target.value)}
-                            placeholder="e.g. Modern Indian History"
-                            className="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500"
-                            autoFocus
-                        />
+                        <div>
+                            <input
+                                type="text"
+                                value={newCourseTitle}
+                                onChange={(e) => setNewCourseTitle(e.target.value)}
+                                maxLength={150}
+                                placeholder="e.g. Modern Indian History"
+                                className="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-teal-500"
+                                autoFocus
+                            />
+                            <p className="text-xs text-slate-400 mt-1 text-right">{newCourseTitle.length}/150</p>
+                        </div>
                         <div className="flex gap-3">
                             <button
                                 onClick={() => setShowCreateCourseModal(false)}
@@ -641,6 +686,50 @@ export default function UnifiedCoursesAdminPage() {
                                 className="flex-1 py-3 rounded-xl bg-teal-600 text-white text-sm font-bold hover:bg-teal-700"
                             >
                                 Create Course
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {deleteTarget && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+                    onClick={() => !isDeleting && setDeleteTarget(null)}
+                >
+                    <div
+                        className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-4"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <h3 className="text-lg font-bold text-slate-900">
+                            Delete {deleteTarget.type === 'course' ? 'Root Course' : 'Course Group Bundle'}
+                        </h3>
+                        <p className="text-slate-600 text-sm">
+                            Are you sure you want to delete:
+                        </p>
+                        <p className="text-slate-900 font-semibold text-sm bg-slate-50 p-3 rounded-xl border border-slate-200 break-words">
+                            &quot;{deleteTarget.title}&quot;
+                        </p>
+                        <p className="text-red-600 text-xs">
+                            {deleteTarget.type === 'course'
+                                ? 'This will permanently delete this course and all its subjects, topics, and lectures. This action cannot be undone.'
+                                : 'This will permanently delete this course group bundle. This action cannot be undone.'}
+                        </p>
+                        <div className="flex gap-3 justify-end pt-2">
+                            <button
+                                onClick={() => setDeleteTarget(null)}
+                                disabled={isDeleting}
+                                className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-colors disabled:opacity-50"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={confirmDeleteTarget}
+                                disabled={isDeleting}
+                                className="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-colors disabled:opacity-50"
+                            >
+                                {isDeleting ? 'Deleting...' : 'Confirm Delete'}
                             </button>
                         </div>
                     </div>

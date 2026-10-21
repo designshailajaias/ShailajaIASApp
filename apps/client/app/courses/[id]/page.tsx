@@ -155,6 +155,15 @@ export default function StudentCoursePlayerPage() {
     const [quizSubmitted, setQuizSubmitted] = useState<boolean>(false);
     const [currentQuestionIdx, setCurrentQuestionIdx] = useState<number>(0); // Horizontal single-question index
 
+    const switchPracticeMode = (newMode: boolean) => {
+        if (newMode !== learnMode) {
+            setLearnMode(newMode);
+            setSelectedAnswers({});
+            setQuizSubmitted(false);
+            setCurrentQuestionIdx(0);
+        }
+    };
+
     // In-place Mains Test States (matching Mains Practice Test Accordion UI)
     const [mptData, setMptData] = useState<FetchedMpt | null>(null);
     const [mptLoading, setMptLoading] = useState(false);
@@ -858,7 +867,7 @@ export default function StudentCoursePlayerPage() {
                         {activeTab === 'overview' && (
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between">
-                                    <h2 className="text-xl font-serif font-bold text-slate-900">
+                                    <h2 className="text-lg font-bold text-slate-900 font-headline">
                                         {activeVideo?.title || activeNode?.title}
                                     </h2>
                                     {activeVideo?.videoProvider === 'bunny' && (
@@ -876,7 +885,7 @@ export default function StudentCoursePlayerPage() {
                         {/* NOTES TAB CONTENT */}
                         {activeTab === 'notes' && hasNotes && (
                             <div className="space-y-5">
-                                <h3 className="font-bold text-slate-900 text-base flex items-center gap-2">
+                                <h3 className="text-lg font-bold text-slate-900 font-headline flex items-center gap-2">
                                     📄 Study Notes &amp; Handouts
                                 </h3>
                                 {activeVideo?.notesText && (
@@ -976,7 +985,7 @@ export default function StudentCoursePlayerPage() {
                                         {/* Action Bar: Control Mode Switch & Score Overview */}
                                         <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-wrap items-center justify-between gap-3">
                                             <div>
-                                                <h3 className="font-serif font-bold text-slate-900 text-base flex items-center gap-2">
+                                                <h3 className="text-lg font-bold text-slate-900 font-headline flex items-center gap-2">
                                                     📝 {quizData?.title || 'Prelims Practice Test'}
                                                 </h3>
                                                 <p className="text-xs text-slate-600">
@@ -987,7 +996,7 @@ export default function StudentCoursePlayerPage() {
                                             {/* Mode Toggle: Learn Mode vs Test Mode */}
                                             <div className="flex items-center gap-3 bg-white p-1.5 rounded-xl border border-slate-200 text-xs">
                                                 <button
-                                                    onClick={() => setLearnMode(true)}
+                                                    onClick={() => switchPracticeMode(true)}
                                                     className={`px-3 py-1.5 rounded-lg font-bold transition-all ${
                                                         learnMode
                                                             ? 'bg-[#1E3A5F] text-amber-300 shadow-xs'
@@ -997,7 +1006,7 @@ export default function StudentCoursePlayerPage() {
                                                     💡 Learn Mode
                                                 </button>
                                                 <button
-                                                    onClick={() => setLearnMode(false)}
+                                                    onClick={() => switchPracticeMode(false)}
                                                     className={`px-3 py-1.5 rounded-lg font-bold transition-all ${
                                                         !learnMode
                                                             ? 'bg-[#1E3A5F] text-amber-300 shadow-xs'
@@ -1473,7 +1482,7 @@ export default function StudentCoursePlayerPage() {
                                     <div className="space-y-6">
                                         {/* Ask Doubt Form */}
                                         <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
-                                            <h3 className="font-bold text-slate-900 text-base flex items-center gap-2">
+                                            <h3 className="text-lg font-bold text-slate-900 font-headline flex items-center gap-2">
                                                 ❓ Ask Doubt &amp; Academic Support
                                             </h3>
                                             {activeVideo?.helpContactInfo && (

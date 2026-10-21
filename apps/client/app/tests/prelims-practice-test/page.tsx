@@ -1183,7 +1183,7 @@ function PrelimsPracticeTestInner() {
                                 </div>
 
                                 {/* Navigation Row */}
-                                <div className="flex flex-wrap items-center justify-between gap-4 mt-6">
+                                <div className="sticky bottom-4 bg-white/95 backdrop-blur-md border border-gray-200/80 rounded-2xl p-4 shadow-lg z-20 flex flex-wrap items-center justify-between gap-4 mt-6">
                                     <button
                                         onClick={() => setCurrentQuestionIndex(prev => Math.max(0, prev - 1))}
                                         disabled={currentQuestionIndex === 0}

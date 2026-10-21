@@ -34,11 +34,24 @@ export default function EditQuizPage() {
     const [date, setDate] = useState('');
     const [setName, setSetName] = useState('');
     const [tags, setTags] = useState<string[]>([]);
+    const [tagInput, setTagInput] = useState('');
 
     const [questions, setQuestions] = useState<QuestionForm[]>([{ ...emptyQuestion }]);
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
+
+    const handleAddTag = () => {
+        const trimmed = tagInput.trim().toLowerCase();
+        if (trimmed && !tags.includes(trimmed)) {
+            setTags([...tags, trimmed]);
+            setTagInput('');
+        }
+    };
+
+    const handleRemoveTag = (tagToRemove: string) => {
+        setTags(tags.filter((t) => t !== tagToRemove));
+    };
 
     // Load existing quiz data
     useEffect(() => {
@@ -232,7 +245,55 @@ export default function EditQuizPage() {
                     </div>
                 </div>
 
-
+                {/* Tags */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Tags</label>
+                    <div className="flex gap-2 mb-3">
+                        <input
+                            type="text"
+                            value={tagInput}
+                            onChange={(e) => setTagInput(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    handleAddTag();
+                                }
+                            }}
+                            maxLength={50}
+                            placeholder="Add tag (e.g. polity, economy, current-affairs) and press Enter"
+                            className="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                        />
+                        <button
+                            type="button"
+                            onClick={handleAddTag}
+                            className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors"
+                        >
+                            Add Tag
+                        </button>
+                    </div>
+                    {tags.length > 0 ? (
+                        <div className="flex flex-wrap gap-2">
+                            {tags.map((tag) => (
+                                <span
+                                    key={tag}
+                                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-900 border border-amber-200"
+                                >
+                                    #{tag}
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveTag(tag)}
+                                        className="text-amber-700 hover:text-amber-900 font-bold"
+                                        aria-label={`Remove tag ${tag}`}
+                                    >
+                                        ×
+                                    </button>
+                                </span>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-xs text-gray-400">No tags assigned yet. Type a tag and click Add or press Enter.</p>
+                    )}
+                </div>
 
                 {/* Questions */}
                 <div className="space-y-4">
@@ -268,13 +329,17 @@ export default function EditQuizPage() {
                             </div>
 
                             {/* Question Text */}
-                            <textarea
-                                value={q.question}
-                                onChange={(e) => updateQuestion(qIdx, 'question', e.target.value)}
-                                placeholder="Enter question text..."
-                                rows={3}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent mb-4"
-                            />
+                            <div>
+                                <textarea
+                                    value={q.question}
+                                    onChange={(e) => updateQuestion(qIdx, 'question', e.target.value)}
+                                    maxLength={2000}
+                                    placeholder="Enter question text..."
+                                    rows={3}
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                                />
+                                <p className="text-xs text-gray-400 mt-1 mb-4 text-right">{q.question.length}/2000</p>
+                            </div>
 
                             {/* Options */}
                             <div className="grid grid-cols-2 gap-3 mb-4">
@@ -296,6 +361,7 @@ export default function EditQuizPage() {
                                             type="text"
                                             value={q.options[oIdx]}
                                             onChange={(e) => updateOption(qIdx, oIdx, e.target.value)}
+                                            maxLength={500}
                                             placeholder={`Option ${label}`}
                                             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:border-transparent"
                                         />
@@ -307,19 +373,24 @@ export default function EditQuizPage() {
                             </p>
 
                             {/* Explanation */}
-                            <textarea
-                                value={q.explanation}
-                                onChange={(e) => updateQuestion(qIdx, 'explanation', e.target.value)}
-                                placeholder="Enter explanation text..."
-                                rows={2}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent mb-4"
-                            />
+                            <div>
+                                <textarea
+                                    value={q.explanation}
+                                    onChange={(e) => updateQuestion(qIdx, 'explanation', e.target.value)}
+                                    maxLength={3000}
+                                    placeholder="Enter explanation text..."
+                                    rows={2}
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                                />
+                                <p className="text-xs text-gray-400 mt-1 mb-4 text-right">{q.explanation.length}/3000</p>
+                            </div>
 
                             {/* Subject */}
                             <input
                                 type="text"
                                 value={q.subject || ''}
                                 onChange={(e) => updateQuestion(qIdx, 'subject', e.target.value)}
+                                maxLength={100}
                                 placeholder="Enter subject name (e.g., Polity)"
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
                             />

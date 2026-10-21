@@ -50,6 +50,8 @@ export default function ArticlesPage() {
     const [totalPages, setTotalPages] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
     const [dateFilter, setDateFilter] = useState('');
+    const [sortBy, setSortBy] = useState<'date' | 'title'>('date');
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
     const [deleteTarget, setDeleteTarget] = useState<{ id: string; title: string } | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
 
@@ -60,10 +62,17 @@ export default function ArticlesPage() {
     // ─── Client-side search results (from engine) ───────────────────────
     const searchResults = useMemo<ArticleMeta[]>(() => {
         if (!engine || !isSearchActive) return [];
-        return engine.searchByTitle(searchQuery, {
+        const results = engine.searchByTitle(searchQuery, {
             type: filter !== 'all' ? filter : undefined,
         });
-    }, [engine, searchQuery, filter, isSearchActive]);
+        return [...results].sort((a, b) => {
+            if (sortBy === 'title') {
+                return sortOrder === 'asc' ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title);
+            } else {
+                return sortOrder === 'asc' ? new Date(a.date).getTime() - new Date(b.date).getTime() : new Date(b.date).getTime() - new Date(a.date).getTime();
+            }
+        });
+    }, [engine, searchQuery, filter, isSearchActive, sortBy, sortOrder]);
 
     // Paginate client-side search results
     const searchPage = useMemo(() => {
@@ -78,12 +87,21 @@ export default function ArticlesPage() {
     useEffect(() => {
         if (isSearchActive) return; // Skip when using client-side search
         fetchArticles();
-    }, [token, filter, page, dateFilter, isSearchActive]);
+    }, [token, filter, page, dateFilter, isSearchActive, sortBy, sortOrder]);
 
     // Reset page on filter changes
     useEffect(() => {
         setPage(1);
     }, [searchQuery, filter, dateFilter]);
+
+    const handleSort = (field: 'title' | 'date') => {
+        if (sortBy === field) {
+            setSortOrder(prev => (prev === 'asc' ? 'desc' : 'asc'));
+        } else {
+            setSortBy(field);
+            setSortOrder('asc');
+        }
+    };
 
     const fetchArticles = async () => {
         if (!token) return;
@@ -93,6 +111,8 @@ export default function ArticlesPage() {
             const params = new URLSearchParams();
             params.set('page', String(page));
             params.set('limit', '15');
+            params.set('sortBy', sortBy);
+            params.set('sortOrder', sortOrder);
             if (filter !== 'all') params.set('type', filter);
             if (dateFilter) params.set('date', dateFilter);
 
@@ -303,9 +323,31 @@ export default function ArticlesPage() {
                     <table className="w-full" style={{ tableLayout: 'fixed' }}>
                         <thead className="bg-gray-50 border-b border-gray-200">
                             <tr>
-                                <th className="text-left px-6 py-4 text-sm font-medium text-gray-500" style={{ width: '35%' }}>Title</th>
+                                <th
+                                    onClick={() => handleSort('title')}
+                                    className="text-left px-6 py-4 text-sm font-medium text-gray-500 cursor-pointer select-none hover:text-gray-900 group"
+                                    style={{ width: '35%' }}
+                                >
+                                    <div className="flex items-center gap-1.5">
+                                        <span>Title</span>
+                                        <span className="text-xs text-gray-400 group-hover:text-gray-600">
+                                            {sortBy === 'title' ? (sortOrder === 'asc' ? '▲' : '▼') : '↕'}
+                                        </span>
+                                    </div>
+                                </th>
                                 <th className="text-left px-6 py-4 text-sm font-medium text-gray-500" style={{ width: '15%' }}>Type</th>
-                                <th className="text-left px-6 py-4 text-sm font-medium text-gray-500" style={{ width: '15%' }}>Date</th>
+                                <th
+                                    onClick={() => handleSort('date')}
+                                    className="text-left px-6 py-4 text-sm font-medium text-gray-500 cursor-pointer select-none hover:text-gray-900 group"
+                                    style={{ width: '15%' }}
+                                >
+                                    <div className="flex items-center gap-1.5">
+                                        <span>Date</span>
+                                        <span className="text-xs text-gray-400 group-hover:text-gray-600">
+                                            {sortBy === 'date' ? (sortOrder === 'asc' ? '▲' : '▼') : '↕'}
+                                        </span>
+                                    </div>
+                                </th>
                                 <th className="text-left px-6 py-4 text-sm font-medium text-gray-500" style={{ width: '20%' }}>Tags</th>
                                 <th className="text-right px-6 py-4 text-sm font-medium text-gray-500" style={{ width: '15%' }}>Actions</th>
                             </tr>

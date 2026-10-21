@@ -226,6 +226,9 @@ function DailyQuizInner() {
         quizzes.slice(0, currentIndex).reduce((sum, quiz) => sum + quiz.questions.length, 0) + 
         currentQuestionIndex + 1;
 
+    const hasPrev = currentQuestionIndex > 0 || currentIndex > 0 || Boolean(adjacentDates.previous);
+    const hasNext = currentQuestionIndex < totalQuestionsInQuiz - 1 || currentIndex < quizzes.length - 1 || Boolean(adjacentDates.next);
+
     return (
         <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans">
             {/* Header Controls */}
@@ -413,7 +416,8 @@ function DailyQuizInner() {
                         <div className="flex items-center justify-between gap-4">
                             <button
                                 onClick={goToPrev}
-                                className="flex-1 max-w-[200px] flex items-center justify-center gap-2 px-6 py-4 bg-white border border-gray-200 rounded-xl text-[#1E3A5F] font-bold text-sm shadow-sm hover:bg-gray-50 transition-all active:scale-[0.98]"
+                                disabled={!hasPrev}
+                                className="flex-1 max-w-[200px] flex items-center justify-center gap-2 px-6 py-4 bg-white border border-gray-200 rounded-xl text-[#1E3A5F] font-bold text-sm shadow-sm hover:bg-gray-50 transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
                             >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
@@ -422,7 +426,8 @@ function DailyQuizInner() {
                             </button>
                             <button
                                 onClick={goToNext}
-                                className="flex-1 max-w-[200px] flex items-center justify-center gap-2 px-6 py-4 bg-[#1E3A5F] rounded-xl text-white font-bold text-sm shadow-lg shadow-blue-900/10 hover:bg-[#2A4E7D] transition-all active:scale-[0.98]"
+                                disabled={!hasNext}
+                                className="flex-1 max-w-[200px] flex items-center justify-center gap-2 px-6 py-4 bg-[#1E3A5F] rounded-xl text-white font-bold text-sm shadow-lg shadow-blue-900/10 hover:bg-[#2A4E7D] transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
                             >
                                 Next
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

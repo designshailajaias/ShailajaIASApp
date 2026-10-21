@@ -138,21 +138,25 @@ export default function QuizzesPage() {
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex flex-wrap gap-1">
-                                            {quiz.tags?.map((tag) => {
-                                                let tagStyle = 'bg-gray-100 text-gray-600 border border-gray-200';
-                                                if (tag === 'prelims-practice') {
-                                                    tagStyle = 'bg-purple-100 text-purple-800 border border-purple-200 font-semibold';
-                                                } else if (tag === 'prelims-test-series') {
-                                                    tagStyle = 'bg-blue-100 text-blue-800 border border-blue-200 font-semibold';
-                                                } else {
-                                                    tagStyle = 'bg-amber-50 text-amber-800 border border-amber-200 font-medium';
-                                                }
-                                                return (
-                                                    <span key={tag} className={`px-2 py-0.5 rounded text-xs lowercase ${tagStyle}`}>
-                                                        {tag}
-                                                    </span>
-                                                );
-                                            })}
+                                            {quiz.tags && quiz.tags.length > 0 ? (
+                                                quiz.tags.map((tag) => {
+                                                    let tagStyle = 'bg-gray-100 text-gray-600 border border-gray-200';
+                                                    if (tag === 'prelims-practice') {
+                                                        tagStyle = 'bg-purple-100 text-purple-800 border border-purple-200 font-semibold';
+                                                    } else if (tag === 'prelims-test-series') {
+                                                        tagStyle = 'bg-blue-100 text-blue-800 border border-blue-200 font-semibold';
+                                                    } else {
+                                                        tagStyle = 'bg-amber-50 text-amber-800 border border-amber-200 font-medium';
+                                                    }
+                                                    return (
+                                                        <span key={tag} className={`px-2 py-0.5 rounded text-xs lowercase ${tagStyle}`}>
+                                                            {tag}
+                                                        </span>
+                                                    );
+                                                })
+                                            ) : (
+                                                <span className="text-gray-400 text-xs italic">—</span>
+                                            )}
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 text-right">

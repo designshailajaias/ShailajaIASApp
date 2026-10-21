@@ -11,7 +11,7 @@ import { invalidateSearchIndexCache } from './search-index.controller.js';
 // @access  Public
 export const getArticles = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { type, tags, page = 1, limit = 10, search, year, month } = req.query;
+        const { type, tags, page = 1, limit = 10, search, year, month, sortBy, sortOrder } = req.query;
 
         const query: Record<string, unknown> = {};
 
@@ -56,9 +56,16 @@ export const getArticles = async (req: Request, res: Response): Promise<void> =>
             query.date = { $gte: startUtc, $lt: endUtc };
         }
 
+        let sortOption: Record<string, 1 | -1> = { date: -1, createdAt: -1 };
+        if (sortBy === 'title') {
+            sortOption = { title: sortOrder === 'asc' ? 1 : -1 };
+        } else if (sortBy === 'date') {
+            sortOption = { date: sortOrder === 'asc' ? 1 : -1, createdAt: sortOrder === 'asc' ? 1 : -1 };
+        }
+
         const total = await Article.countDocuments(query);
         const articles = await Article.find(query)
-            .sort({ date: -1, createdAt: -1 })
+            .sort(sortOption)
             .skip((Number(page) - 1) * Number(limit))
             .limit(Number(limit))
             .populate('createdBy', 'name');

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect } from 'react';
 
 /**
  * Route-to-label mapping.
@@ -20,6 +21,7 @@ const ROUTE_LABELS: Record<string, string> = {
     'resources':      'Resources',
     'mentorship':     'Mentorship',
     'current-affairs': 'Current Affairs',
+    'courses':        'Video Courses',
 
     'tests':          'Tests',
     'prelims-test-series':  'Prelims Test Series',
@@ -28,6 +30,14 @@ const ROUTE_LABELS: Record<string, string> = {
     'mains-practice-test':  'Mains Practice Test',
     'ca-prelims':           'CA Prelims',
 };
+
+const CURRENT_AFFAIRS_SUBMODULES = new Set([
+    'daily-prelims',
+    'daily-mains',
+    'daily-quiz',
+    'burning-issues',
+    'magazines'
+]);
 
 /** Convert a slug like "study-plan" to "Study Plan" */
 function titleCase(slug: string): string {
@@ -45,18 +55,27 @@ interface Crumb {
 export default function Breadcrumbs() {
     const pathname = usePathname();
 
+    useEffect(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    }, [pathname]);
+
     // Don't show on landing page, admin pages, or mentor pages
     if (!pathname || pathname === '/' || pathname.startsWith('/admin') || pathname === '/mentor' || pathname.startsWith('/mentor/')) return null;
-
 
     const segments = pathname.split('/').filter(Boolean);
 
     const crumbs: Crumb[] = [{ label: 'Home', href: '/' }];
 
+    // If direct current affairs submodule, inject Current Affairs parent
+    if (segments.length > 0 && CURRENT_AFFAIRS_SUBMODULES.has(segments[0])) {
+        crumbs.push({ label: 'Current Affairs', href: '/current-affairs' });
+    }
+
     let accumulatedPath = '';
     for (const segment of segments) {
         accumulatedPath += `/${segment}`;
-        const label = ROUTE_LABELS[segment] || titleCase(segment);
+        const isMongoId = /^[0-9a-fA-F]{24}$/.test(segment);
+        const label = isMongoId ? 'Course Details' : (ROUTE_LABELS[segment] || titleCase(segment));
         crumbs.push({ label, href: accumulatedPath });
     }
 
