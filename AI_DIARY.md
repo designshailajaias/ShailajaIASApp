@@ -1803,6 +1803,14 @@ Admin creates content
      - **CI/CD & Environment Specs**: Created `.github/workflows/deploy.yml` for automated linting, typechecking, and ECR deployment, along with `.env.example` templates for both API and Client.
      - **Full Plan Document**: Documented in `cloud_migration_plan.md`.
 
+### Session: 2026-10-22 — Zero-Cost Cloud Migration Prep (Render + Vercel + MongoDB Atlas)
+- **Who:** AI (Antigravity)
+- **What:** Prepared repository for rapid zero-cost demo deployment on Render (API) and Vercel (Frontend):
+  1. **MongoDB URI Compatibility**: Updated `apps/api/src/config/db.ts` to support both `MONGODB_URI` (Render standard) and `MONGO_URI`.
+  2. **Cloud Host Binding**: Updated `apps/api/src/index.ts` to explicitly bind `app.listen` to `0.0.0.0` so Render routes external traffic cleanly to port `process.env.PORT`.
+  3. **Universal Preview & Production CORS**: Enhanced CORS configuration in `apps/api/src/index.ts` to parse comma-separated `CLIENT_URL` and wildcard match any `*.vercel.app` origin via regex, ensuring all Vercel deployments and previews work out of the box without CORS errors.
+  4. **Asset & Build Verification**: Verified that all 31 upload assets (54MB) in `apps/api/uploads/` are tracked in git and served via `/uploads`; verified both `pnpm --filter api build` and `pnpm --filter client run build` (all 58 routes) pass with 0 errors.
+
 ### Session: 2026-10-21 — Bugsheet 3 Failures Resolution (Admin Portal & User Webpage)
 - **Who:** AI (Antigravity)
 - **What:** Addressed all failed status test cases across Sheet 1 (Admin Portal) and Sheet 2 (User webpage) from `Bugsheet 3.xlsx`:

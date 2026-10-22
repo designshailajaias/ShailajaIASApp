@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { User } from '../models/User.js';
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/shailaja-ias';
+const MONGO_URI = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://localhost:27017/shailaja-ias';
 
 export const connectDB = async (): Promise<void> => {
   try {

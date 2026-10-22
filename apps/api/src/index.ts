@@ -45,21 +45,34 @@ connectDB();
 const app: express.Application = express();
 
 // CORS configuration - allow multiple origins
+const clientUrls = (process.env.CLIENT_URL || '')
+  .split(',')
+  .map((u) => u.trim())
+  .filter(Boolean);
+
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
   'http://127.0.0.1:3000',
   'http://127.0.0.1:3001',
-  process.env.CLIENT_URL,
-].filter(Boolean) as string[];
+  ...clientUrls,
+];
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl)
+    // Allow requests with no origin (like mobile apps, curl, or server-to-server)
     if (!origin) return callback(null, true);
+
+    // Direct match in allowed origins list
     if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
+
+    // Allow any Vercel deployment (*.vercel.app)
+    if (/^https:\/\/.*\.vercel\.app$/.test(origin)) {
+      return callback(null, true);
+    }
+
     return callback(null, false);
   },
   credentials: true,
@@ -119,8 +132,8 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 4000;
 
-app.listen(PORT, () => {
-  console.log(`🚀 API running on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 API running on http://0.0.0.0:${PORT}`);
 });
 
 export default app;
