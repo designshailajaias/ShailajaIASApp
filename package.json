@@ -8,6 +8,7 @@
     "lint:all": "turbo run lint",
     "check-types:all": "turbo run check-types",
     "preinstall": "npx only-allow pnpm",
+    "create-admin": "pnpm --filter api exec tsx src/scripts/create-admin.ts",
     "nuke": "kill -9 $(lsof -t -i:3000 -i:3001 -i:4000) || true && pnpm run dev:all"
   },
   "devDependencies": {
