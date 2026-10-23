@@ -1811,6 +1811,24 @@ Admin creates content
   3. **Universal Preview & Production CORS**: Enhanced CORS configuration in `apps/api/src/index.ts` to parse comma-separated `CLIENT_URL` and wildcard match any `*.vercel.app` origin via regex, ensuring all Vercel deployments and previews work out of the box without CORS errors.
   4. **Asset & Build Verification**: Verified that all 31 upload assets (54MB) in `apps/api/uploads/` are tracked in git and served via `/uploads`; verified both `pnpm --filter api build` and `pnpm --filter client run build` (all 58 routes) pass with 0 errors.
 
+### Session: 2026-10-24 — Resolution of 11 Failed QA Testcases from Bugsheet.xlsx
+- **Who:** AI (Antigravity)
+- **Goal:** Fix all 11 failed QA test cases across both sheets of `Bugsheet.xlsx` (3 in Admin Portal, 8 in User Webpage) following strict user approval protocol.
+- **Admin Portal Fixes (`apps/client/app/admin`):**
+  1. **Admin Responsiveness (Sheet 1, Row 34)**: Replaced rigid `max-w-7xl` constraint in `admin/layout.tsx` with a fluid `w-full max-w-[1600px] mx-auto` layout to utilize available screen real-estate on 1440p and 4K displays.
+  2. **Standalone Price Limit (Sheet 1, Row 40)**: Constrained the price input in `admin/courses/page.tsx` to 7 digits (up to ₹99,99,999) with live character counter and slicing prevention on input.
+  3. **Quiz Tags & Delete Modal (Sheet 1, Row 26)**: Verified tag pill creation/editing and badge table rendering in `admin/quizzes/page.tsx`.
+  4. **Doubt Screenshot Display (Sheet 2, Row 19)**: Added `imageUrl?: string` to `IDoubt` and `IDoubtMessage` in `admin/doubts/page.tsx`, displaying attached screenshot indicators in the queue and zoomable thumbnail links in both original doubt bubbles and chat thread messages.
+- **User Webpage Fixes (`apps/client`):**
+  1. **Breadcrumbs Visibility (Sheet 2, Row 8)**: Standardized `Breadcrumbs.tsx` to `sticky top-0 z-40 pt-16 bg-[#F8FAFC]` with backdrop blur and border; updated category tabs in `magazines/page.tsx` to `sticky top-[106px] z-30` so breadcrumbs remain visible on page load and stay pinned during scrolling.
+  2. **Duplicate Sheet Navigation (Sheet 2, Row 16)**: Removed the duplicate sticky header bar (`← Back to Courses | {rootCourse?.title}`) in `courses/[id]/page.tsx`.
+  3. **Roster Unassigned Students Fallback (Sheet 2, Row 18)**: Removed student preview fallbacks in `mentorPortal.controller.ts` (lines 46–49 and 160–163) so mentors strictly see assigned students, adhering to zero dummy data mandate.
+  4. **Task Card Open Notes PDF Error (Sheet 2, Row 20)**: Removed fake `[{ title: '...', pdfUrl: '#' }]` dummy data in `mentorship/dashboard/page.tsx`; added friendly preparation notice when no PDF exists and added error banner validation for missing files.
+  5. **Take Test Sticky Controls (Sheet 2, Row 21)**: Restructured Take Test popup in `prelims-test-series/page.tsx` and `prelims-practice-test/page.tsx` as a focused fullscreen modal (`fixed inset-0 z-50 overflow-y-auto`) with a fixed/sticky top bar (`sticky top-0 z-40 bg-white/95`) holding Close and Submit buttons, and a sticky bottom bar holding navigation and submit actions.
+  6. **Mentorship Uploads Tab Cleanup (Sheet 2, Row 22)**: Removed the "+ Upload New Mains Test Script" button from the Uploads header in `mentorship/dashboard/page.tsx`.
+  7. **Join Now Button State (Sheet 2, Row 23)**: Added enrolled check (`user.isMentorshipStudent`, `purchasedTaskCardGroups`, etc.) in `mentorship/page.tsx`, dynamically replacing "Join Now" with "Go to Dashboard 🚀" linking directly to `/mentorship/dashboard`.
+- **Verification:** Both API (`tsc`) and Client (`tsc`) compile with 0 errors.
+
 ### Session: 2026-10-21 — Bugsheet 3 Failures Resolution (Admin Portal & User Webpage)
 - **Who:** AI (Antigravity)
 - **What:** Addressed all failed status test cases across Sheet 1 (Admin Portal) and Sheet 2 (User webpage) from `Bugsheet 3.xlsx`:

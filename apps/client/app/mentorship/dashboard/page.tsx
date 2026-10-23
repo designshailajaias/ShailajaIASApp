@@ -248,6 +248,7 @@ export default function MentorshipDashboardPage() {
 
     // Purchase Modal
     const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+    const [pdfDownloadError, setPdfDownloadError] = useState<string | null>(null);
 
     useEffect(() => {
         if (isLoggedIn && token) {
@@ -2378,12 +2379,6 @@ export default function MentorshipDashboardPage() {
                                 <span className="text-[10px] font-bold text-[#787163] uppercase tracking-wider">ANSWER SCRIPTS &amp; PRACTICE SUBMISSIONS</span>
                                 <h1 className="text-2xl font-serif font-bold text-[#3d3a34]">Uploads &amp; Evaluated Returns</h1>
                             </div>
-                            <Link
-                                href="/tests/mains-test-series"
-                                className="bg-[#b8502a] text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-[#a04322] shadow-sm"
-                            >
-                                + Upload New Mains Test Script
-                            </Link>
                         </div>
 
                         <div className="overflow-x-auto">
@@ -2591,23 +2586,39 @@ export default function MentorshipDashboardPage() {
 
                                 <div>
                                     <h4 className="text-xs font-bold text-[#787163] uppercase tracking-wider mb-2">📥 Downloadable PDF Handouts</h4>
-                                    <div className="space-y-2">
-                                        {(activeModal.item?.pdfFiles && activeModal.item.pdfFiles.length > 0
-                                            ? activeModal.item.pdfFiles
-                                            : [{ title: 'Lecture Notes & Active Recall PDF Handout.pdf', pdfUrl: '#' }]
-                                        ).map((pdf: any, pIdx: number) => (
-                                            <a
-                                                key={pIdx}
-                                                href={pdf.pdfUrl || '#'}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="flex items-center justify-between p-3 bg-white rounded-xl border border-[#e3d5bd] text-xs font-bold text-[#3d3a34] hover:bg-[#fff5ea]"
-                                            >
-                                                <span>📄 {pdf.title}</span>
-                                                <span className="text-[#b8502a]">Download PDF 📥</span>
-                                            </a>
-                                        ))}
-                                    </div>
+                                    {pdfDownloadError && (
+                                        <div className="mb-3 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs flex items-center justify-between">
+                                            <span>⚠️ {pdfDownloadError}</span>
+                                            <button onClick={() => setPdfDownloadError(null)} className="text-red-500 font-bold ml-2">✕</button>
+                                        </div>
+                                    )}
+                                    {activeModal.item?.pdfFiles && activeModal.item.pdfFiles.length > 0 ? (
+                                        <div className="space-y-2">
+                                            {activeModal.item.pdfFiles.map((pdf: any, pIdx: number) => (
+                                                <button
+                                                    key={pIdx}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        if (!pdf.pdfUrl || pdf.pdfUrl === '#' || pdf.pdfUrl.trim() === '') {
+                                                            setPdfDownloadError('PDF notes are currently being prepared for this lecture.');
+                                                            return;
+                                                        }
+                                                        const fullUrl = pdf.pdfUrl.startsWith('http') ? pdf.pdfUrl : `${API_URL}${pdf.pdfUrl.startsWith('/') ? '' : '/'}${pdf.pdfUrl}`;
+                                                        window.open(fullUrl, '_blank');
+                                                    }}
+                                                    className="w-full flex items-center justify-between p-3 bg-white rounded-xl border border-[#e3d5bd] text-xs font-bold text-[#3d3a34] hover:bg-[#fff5ea] transition-colors cursor-pointer text-left"
+                                                >
+                                                    <span className="truncate pr-2">📄 {pdf.title || 'Lecture Handout PDF'}</span>
+                                                    <span className="text-[#b8502a] flex-shrink-0">Download PDF 📥</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="p-4 bg-amber-50/70 border border-amber-200 rounded-xl text-xs text-[#787163]">
+                                            <p className="font-semibold text-amber-800">ℹ️ PDF notes are currently being prepared for this lecture.</p>
+                                            <p className="mt-1 text-slate-500">Please review the active recall summary and lecture video above while handouts are being processed.</p>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="pt-4 border-t border-[#f0e6d4] flex justify-end gap-3">

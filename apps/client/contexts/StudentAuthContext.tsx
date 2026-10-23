@@ -15,6 +15,8 @@ interface StudentUser {
     purchasedMtsGroups?: string[];
     purchasedCourseGroups?: string[];
     purchasedCourses?: string[];
+    purchasedTaskCardGroups?: string[];
+    activeTaskCardGroupId?: string;
     mentorshipPurchasedAt?: string;
 }
 

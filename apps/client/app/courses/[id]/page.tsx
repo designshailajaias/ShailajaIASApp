@@ -703,22 +703,6 @@ export default function StudentCoursePlayerPage() {
 
     return (
         <div className="min-h-screen bg-[#FAFAF8] text-slate-900 font-body">
-            {/* Header Navbar */}
-            <div className="bg-white border-b border-slate-200 px-4 sm:px-8 py-3.5 flex items-center justify-between sticky top-0 z-30 shadow-xs">
-                <div className="flex items-center gap-3">
-                    <Link
-                        href="/courses"
-                        className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition-colors"
-                    >
-                        ← Back to Courses
-                    </Link>
-                    <span className="text-slate-300">|</span>
-                    <h1 className="text-base sm:text-lg font-serif font-bold text-slate-900 truncate">
-                        {rootCourse?.title}
-                    </h1>
-                </div>
-            </div>
-
             {/* Main 2-Column Layout */}
             <div className="max-w-7xl mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
                 {/* Left Sidebar: Course Index & Lecture List */}

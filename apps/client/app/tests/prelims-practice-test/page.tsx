@@ -492,79 +492,80 @@ function PrelimsPracticeTestInner() {
         const isTimerLow = timeRemaining <= 60;
 
         return (
-            <div className="min-h-screen bg-[#FAFAF8] pb-24 font-body animate-fade-in">
-                <main className="pt-20 px-4 md:px-8 max-w-4xl mx-auto">
-                    {/* Active Quiz Header Section */}
-                    <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 mb-8">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-gray-100 pb-6">
-                            <div>
-                                <button
-                                    onClick={() => {
-                                        if (showScorecard || showReview || showOverview) {
-                                            if (timerRef.current) clearInterval(timerRef.current);
-                                            setActiveQuiz(null);
-                                            setShowOverview(false);
-                                            setShowReview(false);
-                                        } else {
-                                            setShowDiscardConfirmModal(true);
-                                        }
-                                    }}
-                                    className="inline-flex items-center gap-2 text-sm font-semibold text-[#1E3A5F] hover:text-[#D97706] mb-3 transition-colors group"
-                                >
-                                    <svg className="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
-                                    </svg>
-                                    Back to list
-                                </button>
-                                <h1 className="text-2xl font-bold text-[#1E3A5F] font-headline">
-                                    {activeQuiz.title}
-                                </h1>
-                                <p className="text-gray-500 text-sm mt-1">
-                                    {getQuizTopics(activeQuiz)} • {totalQuestions} Questions{!learnMode ? ` • ${totalQuestions * 2} Marks` : ''}
-                                </p>
-                            </div>
-
-                            <div className="flex items-center gap-3">
-                                {/* Timer & Submit Badge (Test mode only) */}
-                                {!learnMode && !showScorecard && !showReview && (
-                                    <div className="flex items-center gap-3">
-                                        <div className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl font-mono text-lg font-extrabold border-2 transition-all ${isTimerLow
-                                            ? 'bg-red-50 border-red-200 text-red-600 animate-pulse'
-                                            : 'bg-slate-50 border-gray-200 text-[#1E3A5F]'
-                                            }`}>
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
-                                            {formatTime(timeRemaining)}
-                                        </div>
-                                        {!showOverview ? (
-                                            <button
-                                                type="button"
-                                                onClick={() => setShowOverview(true)}
-                                                className="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm rounded-2xl shadow-sm transition-all"
-                                            >
-                                                Overview
-                                            </button>
-                                        ) : (
-                                            <button
-                                                type="button"
-                                                onClick={() => setShowOverview(false)}
-                                                className="px-4 py-2.5 bg-slate-600 hover:bg-slate-700 text-white font-bold text-sm rounded-2xl shadow-sm transition-all"
-                                            >
-                                                Back to Test
-                                            </button>
-                                        )}
-                                        <button
-                                            onClick={() => setShowSubmitConfirmModal(true)}
-                                            className="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold text-sm rounded-2xl shadow-sm transition-all"
-                                        >
-                                            Submit Test
-                                        </button>
-                                    </div>
-                                )}
-
-                            </div>
+            <div className="fixed inset-0 z-50 overflow-y-auto bg-[#FAFAF8] pb-16 font-body animate-fade-in flex flex-col">
+                {/* Fixed/Sticky Exam Top Bar */}
+                <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-xs px-4 md:px-8 py-3">
+                    <div className="max-w-4xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
+                        <div className="min-w-0">
+                            <button
+                                onClick={() => {
+                                    if (showScorecard || showReview || showOverview) {
+                                        if (timerRef.current) clearInterval(timerRef.current);
+                                        setActiveQuiz(null);
+                                        setShowOverview(false);
+                                        setShowReview(false);
+                                    } else {
+                                        setShowDiscardConfirmModal(true);
+                                    }
+                                }}
+                                className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-red-600 mb-1 transition-colors group cursor-pointer"
+                            >
+                                <svg className="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+                                </svg>
+                                ✕ Close / Exit Practice
+                            </button>
+                            <h1 className="text-base md:text-lg font-bold text-[#1E3A5F] font-headline truncate">
+                                {activeQuiz.title}
+                            </h1>
+                            <p className="text-gray-500 text-xs mt-0.5">
+                                {getQuizTopics(activeQuiz)} • {totalQuestions} Questions{!learnMode ? ` • ${totalQuestions * 2} Marks` : ''}
+                            </p>
                         </div>
+
+                        <div className="flex items-center gap-2.5 flex-shrink-0">
+                            {/* Timer & Submit Badge (Test mode only) */}
+                            {!learnMode && !showScorecard && !showReview && (
+                                <div className="flex items-center gap-2">
+                                    <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-mono text-base font-extrabold border transition-all ${isTimerLow
+                                        ? 'bg-red-50 border-red-200 text-red-600 animate-pulse'
+                                        : 'bg-slate-50 border-gray-200 text-[#1E3A5F]'
+                                        }`}>
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        {formatTime(timeRemaining)}
+                                    </div>
+                                    {!showOverview ? (
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowOverview(true)}
+                                            className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
+                                        >
+                                            Overview
+                                        </button>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowOverview(false)}
+                                            className="px-3.5 py-1.5 bg-slate-600 hover:bg-slate-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
+                                        >
+                                            Back
+                                        </button>
+                                    )}
+                                    <button
+                                        onClick={() => setShowSubmitConfirmModal(true)}
+                                        className="px-4 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all cursor-pointer"
+                                    >
+                                        Submit Test
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </header>
+
+                <main className="px-4 md:px-8 max-w-4xl mx-auto w-full flex-1 py-6">
 
                         {/* Mode Toggle + Stats */}
                         {!showScorecard && !showReview && !showOverview && (
@@ -640,7 +641,6 @@ function PrelimsPracticeTestInner() {
                                 )}
                             </div>
                         )}
-                    </div>
 
                     {/* Quiz Content */}
                     <div className="space-y-6">

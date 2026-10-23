@@ -338,15 +338,27 @@ export default function UnifiedCoursesAdminPage() {
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Standalone Price (₹)</label>
+                                        <div className="flex justify-between items-center mb-1">
+                                            <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider">Standalone Price (₹)</label>
+                                            <span className="text-[10px] text-slate-400">{String(groupForm.price || '').length}/7 digits</span>
+                                        </div>
                                         <input
                                             type="number"
                                             value={groupForm.price || ''}
-                                            onChange={(e) => setGroupForm((p) => ({ ...p, price: parseFloat(e.target.value) || 0 }))}
+                                            onChange={(e) => {
+                                                const val = e.target.value;
+                                                if (val.length > 7) return;
+                                                setGroupForm((p) => ({ ...p, price: parseFloat(val) || 0 }));
+                                            }}
+                                            onInput={(e: React.FormEvent<HTMLInputElement>) => {
+                                                if (e.currentTarget.value.length > 7) {
+                                                    e.currentTarget.value = e.currentTarget.value.slice(0, 7);
+                                                }
+                                            }}
                                             min={0}
-                                            max={999999}
+                                            max={9999999}
                                             className="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:outline-none"
-                                            placeholder="e.g. 14999"
+                                            placeholder="e.g. 14999 (Max ₹99,99,999)"
                                         />
                                     </div>
                                     <div>

@@ -80,37 +80,39 @@ export default function Breadcrumbs() {
     }
 
     return (
-        <nav
-            className="max-w-7xl mx-auto w-full px-4 md:px-8 pt-[80px] pb-2 bg-[#F8FAFC] relative z-30"
-            aria-label="Breadcrumb"
-        >
-            <ol className="flex items-center flex-wrap gap-1 text-xs font-medium">
-                {crumbs.map((crumb, idx) => {
-                    const isLast = idx === crumbs.length - 1;
+        <div className="pt-16 bg-[#F8FAFC] border-b border-slate-200/60 sticky top-0 z-40 backdrop-blur-xs">
+            <nav
+                className="max-w-7xl mx-auto w-full px-4 md:px-8 py-2"
+                aria-label="Breadcrumb"
+            >
+                <ol className="flex items-center flex-wrap gap-1 text-xs font-medium">
+                    {crumbs.map((crumb, idx) => {
+                        const isLast = idx === crumbs.length - 1;
 
-                    return (
-                        <li key={crumb.href} className="flex items-center">
-                            {idx > 0 && (
-                                <span className="mx-1.5 text-gray-300 font-bold select-none">
-                                    ›
-                                </span>
-                            )}
-                            {isLast ? (
-                                <span className="text-[#1E3A5F] font-bold">
-                                    {crumb.label}
-                                </span>
-                            ) : (
-                                <Link
-                                    href={crumb.href}
-                                    className="text-gray-400 hover:text-[#D97706] transition-colors"
-                                >
-                                    {crumb.label}
-                                </Link>
-                            )}
-                        </li>
-                    );
-                })}
-            </ol>
-        </nav>
+                        return (
+                            <li key={crumb.href} className="flex items-center">
+                                {idx > 0 && (
+                                    <span className="mx-1.5 text-gray-300 font-bold select-none">
+                                        ›
+                                    </span>
+                                )}
+                                {isLast ? (
+                                    <span className="text-[#1E3A5F] font-bold">
+                                        {crumb.label}
+                                    </span>
+                                ) : (
+                                    <Link
+                                        href={crumb.href}
+                                        className="text-gray-400 hover:text-[#D97706] transition-colors"
+                                    >
+                                        {crumb.label}
+                                    </Link>
+                                )}
+                            </li>
+                        );
+                    })}
+                </ol>
+            </nav>
+        </div>
     );
 }

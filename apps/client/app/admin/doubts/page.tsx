@@ -8,6 +8,7 @@ interface IDoubtMessage {
     senderId: string;
     senderName: string;
     message: string;
+    imageUrl?: string;
     createdAt: string;
 }
 
@@ -34,6 +35,7 @@ interface IDoubt {
     subject: string;
     title: string;
     description: string;
+    imageUrl?: string;
     status: 'pending' | 'answered' | 'resolved';
     messages: IDoubtMessage[];
     createdAt: string;
@@ -300,6 +302,11 @@ export default function AdminDoubtsPage() {
                                                         {doubt.testSeriesUniqueId}
                                                     </span>
                                                 )}
+                                                {doubt.imageUrl && (
+                                                    <span className="px-1.5 py-0.5 bg-amber-100 text-amber-800 font-bold rounded text-[10px]" title="Has attached screenshot">
+                                                        📷 Screenshot
+                                                    </span>
+                                                )}
                                             </div>
                                             <span className={`px-2 py-0.5 border rounded-full text-[9px] font-bold uppercase ${badgeColor}`}>
                                                 {doubt.status}
@@ -442,6 +449,27 @@ export default function AdminDoubtsPage() {
                                             {selectedDoubt.student?.name} (Original Doubt)
                                         </p>
                                         <p className="leading-relaxed whitespace-pre-line text-slate-700">{selectedDoubt.description}</p>
+                                        
+                                        {/* Original Doubt Screenshot */}
+                                        {selectedDoubt.imageUrl && (
+                                            <div className="mt-2.5 pt-2 border-t border-slate-100">
+                                                <a
+                                                    href={selectedDoubt.imageUrl.startsWith('http') ? selectedDoubt.imageUrl : `${API_URL}${selectedDoubt.imageUrl.startsWith('/') ? '' : '/'}${selectedDoubt.imageUrl}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-block group"
+                                                >
+                                                    <img
+                                                        src={selectedDoubt.imageUrl.startsWith('http') ? selectedDoubt.imageUrl : `${API_URL}${selectedDoubt.imageUrl.startsWith('/') ? '' : '/'}${selectedDoubt.imageUrl}`}
+                                                        alt="Doubt Screenshot"
+                                                        className="max-h-48 max-w-full rounded-xl border border-slate-200 object-cover shadow-xs group-hover:opacity-90 transition-opacity"
+                                                    />
+                                                    <span className="text-[10px] text-blue-600 group-hover:underline block mt-1 font-semibold">
+                                                        🔍 Click to view full screenshot ↗
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        )}
                                     </div>
                                     <span className="text-[9px] text-slate-400 font-semibold mt-1 pl-1">
                                         {formatDisplayDate(selectedDoubt.createdAt)}
@@ -466,6 +494,27 @@ export default function AdminDoubtsPage() {
                                                     {msg.senderName} {!isStudent && '🎓 (Mentor)'}
                                                 </p>
                                                 <p className="leading-relaxed whitespace-pre-line">{msg.message}</p>
+
+                                                {/* Message Attachment */}
+                                                {msg.imageUrl && (
+                                                    <div className="mt-2 pt-2 border-t border-slate-100/30">
+                                                        <a
+                                                            href={msg.imageUrl.startsWith('http') ? msg.imageUrl : `${API_URL}${msg.imageUrl.startsWith('/') ? '' : '/'}${msg.imageUrl}`}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="inline-block group"
+                                                        >
+                                                            <img
+                                                                src={msg.imageUrl.startsWith('http') ? msg.imageUrl : `${API_URL}${msg.imageUrl.startsWith('/') ? '' : '/'}${msg.imageUrl}`}
+                                                                alt="Attachment"
+                                                                className="max-h-40 max-w-full rounded-lg border border-slate-200 object-cover shadow-xs"
+                                                            />
+                                                            <span className={`text-[10px] block mt-1 font-semibold ${isStudent ? 'text-blue-600' : 'text-white/80'}`}>
+                                                                🔍 View attachment ↗
+                                                            </span>
+                                                        </a>
+                                                    </div>
+                                                )}
                                             </div>
                                             <span className="text-[9px] text-slate-400 font-semibold mt-1 px-1">
                                                 {formatDisplayDate(msg.createdAt)}

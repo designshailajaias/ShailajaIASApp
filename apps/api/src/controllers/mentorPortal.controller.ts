@@ -43,10 +43,6 @@ export const getMentorRoster = async (req: AuthRequest, res: Response): Promise<
                     { _id: { $in: assignedIds } },
                 ],
             }).lean();
-            // Fallback: if no assigned students, fetch all students for preview
-            if (students.length === 0) {
-                students = await User.find({ role: 'student' }).limit(50).lean();
-            }
         }
 
         const now = new Date();
@@ -157,10 +153,6 @@ export const getMentorChats = async (req: AuthRequest, res: Response): Promise<v
                 ],
             }).select('_id').lean();
 
-            // Fallback: if mentor has no assigned students yet, allow fallback roster students
-            if (assignedStudents.length === 0) {
-                assignedStudents = await User.find({ role: 'student' }).limit(50).select('_id').lean();
-            }
             const studentIds = assignedStudents.map(s => s._id);
 
             query = {

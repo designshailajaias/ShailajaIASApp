@@ -85,7 +85,14 @@ const LEVELS = ['Beginner', 'Veteran'];
 
 export default function MentorshipLandingPage() {
     const router = useRouter();
-    const { isLoggedIn } = useStudentAuth();
+    const { isLoggedIn, user } = useStudentAuth();
+
+    const isEnrolled = !!(
+        user?.isMentorshipStudent ||
+        (user?.purchasedMentorTags && user.purchasedMentorTags.length > 0) ||
+        (user?.purchasedTaskCardGroups && user.purchasedTaskCardGroups.length > 0) ||
+        user?.mentorshipPurchasedAt
+    );
 
     // ─── State Management ──────────────────────────────────────────────────────
     const [coursesList, setCoursesList] = useState<Course[]>(DEFAULT_COURSES);
@@ -179,6 +186,11 @@ export default function MentorshipLandingPage() {
     const activeFilterCount = (selectedStage ? 1 : 0) + (selectedLevel ? 1 : 0);
 
     const handleOpenEnrollModal = (course?: Course) => {
+        if (isEnrolled) {
+            router.push('/mentorship/dashboard');
+            return;
+        }
+
         const targetCourse = course || currentCourse;
         setSelectedCourseForPurchase(targetCourse);
         setEnquiryCourse(targetCourse);
@@ -233,9 +245,13 @@ export default function MentorshipLandingPage() {
                             <span className="text-base font-bold text-[#1E3A5F]">{currentCourse.price}</span>
                             <button
                                 onClick={() => handleOpenEnrollModal(currentCourse)}
-                                className="px-4 py-1.5 text-xs font-bold text-white bg-[#1E3A5F] hover:bg-[#152C4A] rounded-xl shadow-sm transition-all"
+                                className={`px-4 py-1.5 text-xs font-bold rounded-xl shadow-sm transition-all ${
+                                    isEnrolled
+                                        ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                                        : 'bg-[#1E3A5F] hover:bg-[#152C4A] text-white'
+                                }`}
                             >
-                                Join Now
+                                {isEnrolled ? 'Go to Dashboard 🚀' : 'Join Now'}
                             </button>
                         </div>
                     </div>
@@ -464,7 +480,7 @@ export default function MentorshipLandingPage() {
                                             </span>
                                         </div>
                                         <button className="text-xs font-bold text-[#D97706] group-hover:text-amber-700 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                                            View Preview
+                                            {isEnrolled ? 'Open Dashboard' : 'View Preview'}
                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                                             </svg>
@@ -509,9 +525,13 @@ export default function MentorshipLandingPage() {
                         </button>
                         <button
                             onClick={() => handleOpenEnrollModal(currentCourse)}
-                            className="px-5 py-2 text-xs font-bold text-white bg-[#1E3A5F] hover:bg-[#152C4A] rounded-xl shadow-sm"
+                            className={`px-5 py-2 text-xs font-bold rounded-xl shadow-sm transition-all ${
+                                isEnrolled
+                                    ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                                    : 'bg-[#1E3A5F] hover:bg-[#152C4A] text-white'
+                            }`}
                         >
-                            Talk to us
+                            {isEnrolled ? 'Go to Dashboard 🚀' : 'Talk to us'}
                         </button>
                     </div>
 
@@ -562,9 +582,13 @@ export default function MentorshipLandingPage() {
                                 </div>
                                 <button
                                     onClick={() => handleOpenEnrollModal(currentCourse)}
-                                    className="px-6 py-3 text-sm font-bold text-white bg-[#1E3A5F] hover:bg-[#152C4A] rounded-xl shadow-md transition-all hover:scale-[1.02]"
+                                    className={`px-6 py-3 text-sm font-bold rounded-xl shadow-md transition-all hover:scale-[1.02] ${
+                                        isEnrolled
+                                            ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                                            : 'bg-[#1E3A5F] hover:bg-[#152C4A] text-white'
+                                    }`}
                                 >
-                                    Join Now
+                                    {isEnrolled ? 'Go to Dashboard 🚀' : 'Join Now'}
                                 </button>
                             </div>
                         </div>
