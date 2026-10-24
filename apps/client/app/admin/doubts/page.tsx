@@ -251,9 +251,9 @@ export default function AdminDoubtsPage() {
             </div>
 
             {/* Main Desk workspace splits */}
-            <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[600px]">
+            <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[600px] 4k:min-h-[850px]">
                 {/* Left pane list: doubts queue */}
-                <div className="lg:col-span-5 flex flex-col bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm h-[650px]">
+                <div className="lg:col-span-5 4k:col-span-4 flex flex-col bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm h-[650px] 4k:h-[850px]">
                     <div className="bg-slate-50 border-b border-slate-200 px-4 py-3 text-sm font-bold text-slate-700">
                         Doubts Queue
                     </div>
@@ -354,7 +354,7 @@ export default function AdminDoubtsPage() {
                 </div>
 
                 {/* Right pane: workspace thread */}
-                <div className="lg:col-span-7 flex flex-col bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm h-[650px]">
+                <div className="lg:col-span-7 4k:col-span-8 flex flex-col bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm h-[650px] 4k:h-[850px]">
                     {!selectedDoubt ? (
                         <div className="flex-1 flex flex-col items-center justify-center text-slate-400 p-8">
                             <span className="text-5xl mb-4">💬</span>

@@ -80,12 +80,12 @@ export default function Breadcrumbs() {
     }
 
     return (
-        <div className="pt-16 bg-[#F8FAFC] border-b border-slate-200/60 sticky top-0 z-40 backdrop-blur-xs">
+        <div className="pt-16 4k:pt-20 bg-[#F8FAFC] border-b border-slate-200/60 sticky top-0 z-40 backdrop-blur-xs">
             <nav
-                className="max-w-7xl mx-auto w-full px-4 md:px-8 py-2"
+                className="max-w-7xl 4k:max-w-[2400px] 5k:max-w-[3400px] mx-auto w-full px-4 md:px-8 4k:px-16 py-2 4k:py-3"
                 aria-label="Breadcrumb"
             >
-                <ol className="flex items-center flex-wrap gap-1 text-xs font-medium">
+                <ol className="flex items-center flex-wrap gap-1 text-xs 4k:text-sm font-medium">
                     {crumbs.map((crumb, idx) => {
                         const isLast = idx === crumbs.length - 1;
 

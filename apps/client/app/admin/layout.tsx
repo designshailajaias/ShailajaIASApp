@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { ReactNode, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AuthProvider, useAuth } from './AuthContext';
@@ -101,6 +101,12 @@ const navItems = [
 function AdminLayoutContent({ children }: { children: ReactNode }) {
     const pathname = usePathname();
     const { user, logout, isLoading } = useAuth();
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+
+    // Close mobile drawer on route change
+    useEffect(() => {
+        setSidebarOpen(false);
+    }, [pathname]);
 
     // Show nothing while checking auth
     if (isLoading) {
@@ -117,25 +123,76 @@ function AdminLayoutContent({ children }: { children: ReactNode }) {
     }
 
     return (
-        <div className="min-h-screen bg-slate-100 flex">
-            {/* Sidebar */}
-            <aside className="w-64 bg-slate-900 text-white flex flex-col flex-shrink-0">
-                {/* Logo */}
-                <div className="p-6 border-b border-slate-800">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-amber-400 to-amber-600 flex items-center justify-center">
-                            <span className="text-lg font-bold">S</span>
+        <div className="min-h-screen bg-slate-100 flex flex-col lg:flex-row relative">
+            {/* Mobile Top Navigation Bar */}
+            <div className="lg:hidden bg-slate-900 text-white px-4 py-3 flex items-center justify-between border-b border-slate-800 sticky top-0 z-30">
+                <div className="flex items-center gap-3">
+                    <button
+                        type="button"
+                        onClick={() => setSidebarOpen(true)}
+                        className="p-2 -ml-1 text-slate-300 hover:text-white rounded-lg focus:outline-hidden hover:bg-slate-800 transition-colors"
+                        aria-label="Open navigation sidebar"
+                    >
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                    <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-full bg-gradient-to-r from-amber-400 to-amber-600 flex items-center justify-center font-bold text-xs">
+                            S
                         </div>
-                        <div>
-                            <h1 className="font-bold text-lg">Shailaja</h1>
-                            <p className="text-xs text-gray-400">Admin Portal</p>
-                        </div>
+                        <span className="font-bold text-sm">Shailaja Admin</span>
                     </div>
                 </div>
+                <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold">
+                        {user?.name?.charAt(0) || 'A'}
+                    </div>
+                </div>
+            </div>
 
-                {/* Navigation */}
-                <nav className="flex-1 p-4">
-                    <ul className="space-y-2">
+            {/* Mobile Backdrop Overlay */}
+            {sidebarOpen && (
+                <div
+                    className="fixed inset-0 bg-black/60 backdrop-blur-xs z-40 lg:hidden transition-opacity"
+                    onClick={() => setSidebarOpen(false)}
+                    aria-hidden="true"
+                />
+            )}
+
+            {/* Sidebar (Drawer on mobile/tablet, Fixed on desktop, Scaled on 2K/4K) */}
+            <aside
+                className={`fixed lg:static top-0 bottom-0 left-0 z-50 w-72 lg:w-64 4k:w-72 5k:w-80 bg-slate-900 text-white flex flex-col flex-shrink-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none ${
+                    sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+                }`}
+            >
+                {/* Logo & Close Button */}
+                <div className="p-5 4k:p-6 border-b border-slate-800 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 4k:w-12 4k:h-12 rounded-full bg-gradient-to-r from-amber-400 to-amber-600 flex items-center justify-center flex-shrink-0 shadow-md">
+                            <span className="text-lg 4k:text-xl font-bold">S</span>
+                        </div>
+                        <div>
+                            <h1 className="font-bold text-lg 4k:text-xl tracking-tight">Shailaja</h1>
+                            <p className="text-xs 4k:text-sm text-gray-400">Admin Portal</p>
+                        </div>
+                    </div>
+                    {/* Mobile Close Button */}
+                    <button
+                        type="button"
+                        onClick={() => setSidebarOpen(false)}
+                        className="lg:hidden p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+                        aria-label="Close navigation sidebar"
+                    >
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                {/* Navigation Links */}
+                <nav className="flex-1 p-3 4k:p-4 overflow-y-auto">
+                    <ul className="space-y-1.5 4k:space-y-2">
                         {navItems.map((item) => {
                             const isActive = pathname === item.href ||
                                 (item.href !== '/admin' && pathname?.startsWith(item.href));
@@ -143,13 +200,13 @@ function AdminLayoutContent({ children }: { children: ReactNode }) {
                                 <li key={item.href}>
                                     <Link
                                         href={item.href}
-                                        className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive
-                                            ? 'bg-amber-500 text-white'
+                                        className={`flex items-center gap-3 px-3.5 py-2.5 4k:px-4 4k:py-3 rounded-xl text-xs 4k:text-sm font-semibold transition-all ${isActive
+                                            ? 'bg-amber-500 text-white shadow-md'
                                             : 'text-gray-400 hover:bg-slate-800 hover:text-white'
                                             }`}
                                     >
                                         <item.icon />
-                                        {item.label}
+                                        <span>{item.label}</span>
                                     </Link>
                                 </li>
                             );
@@ -158,29 +215,29 @@ function AdminLayoutContent({ children }: { children: ReactNode }) {
                 </nav>
 
                 {/* User & Logout */}
-                <div className="p-4 border-t border-slate-800">
-                    <div className="flex items-center gap-3 mb-4 px-4">
-                        <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-sm">
+                <div className="p-4 4k:p-5 border-t border-slate-800 bg-slate-900/90">
+                    <div className="flex items-center gap-3 mb-3 px-2">
+                        <div className="w-9 h-9 4k:w-10 4k:h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-sm font-bold flex-shrink-0">
                             {user?.name?.charAt(0) || 'A'}
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium truncate">{user?.name || 'Admin'}</p>
-                            <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+                            <p className="text-xs 4k:text-sm font-semibold truncate text-white">{user?.name || 'Admin'}</p>
+                            <p className="text-[11px] 4k:text-xs text-gray-400 truncate">{user?.email}</p>
                         </div>
                     </div>
                     <button
                         onClick={logout}
-                        className="w-full flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-red-500/20 hover:text-red-400 rounded-lg transition-all"
+                        className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-xs 4k:text-sm font-semibold text-gray-300 hover:bg-red-500/20 hover:text-red-400 rounded-xl transition-all border border-slate-800 hover:border-red-500/30"
                     >
                         <LogoutIcon />
-                        Logout
+                        <span>Logout</span>
                     </button>
                 </div>
             </aside>
 
-            {/* Main Content */}
+            {/* Main Content Area */}
             <main className="flex-1 overflow-x-hidden overflow-y-auto min-w-0">
-                <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <div className="w-full max-w-[1600px] 4k:max-w-[2400px] 5k:max-w-[3400px] mx-auto px-4 sm:px-6 lg:px-8 4k:px-12 5k:px-16 py-6 4k:py-10">
                     {children}
                 </div>
             </main>

@@ -181,17 +181,17 @@ export default function ResourcesPage() {
 
             {/* Page Header */}
             <div className="bg-white border-b border-gray-200 sticky top-16 z-20">
-                <div className="max-w-5xl mx-auto px-4 py-4">
-                    <h1 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                        <span className="w-8 h-8 rounded-lg bg-[#EEF2FF] flex items-center justify-center text-base">📚</span>
+                <div className="max-w-5xl 4k:max-w-[2000px] 5k:max-w-[2800px] mx-auto px-4 py-4">
+                    <h1 className="text-xl 4k:text-2xl font-bold text-gray-900 flex items-center gap-2">
+                        <span className="w-8 h-8 4k:w-10 4k:h-10 rounded-lg bg-[#EEF2FF] flex items-center justify-center text-base 4k:text-xl">📚</span>
                         Resources
                     </h1>
-                    <p className="text-sm text-gray-500 mt-1">Curated study materials for UPSC preparation</p>
+                    <p className="text-sm 4k:text-base text-gray-500 mt-1">Curated study materials for UPSC preparation</p>
                 </div>
             </div>
 
             {/* Content */}
-            <div className="max-w-5xl mx-auto px-4 py-6">
+            <div className="max-w-5xl 4k:max-w-[2000px] 5k:max-w-[2800px] mx-auto px-4 py-6">
                 {isLoading ? (
                     <div className="flex items-center justify-center py-16">
                         <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#1E3A5F]"></div>
@@ -248,7 +248,7 @@ export default function ResourcesPage() {
                                         ) : !cat.items || cat.items.length === 0 ? (
                                             <p className="text-sm text-gray-400 text-center py-6">No items in this category yet</p>
                                         ) : (
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 4k:grid-cols-3 5k:grid-cols-4 gap-4 4k:gap-6">
                                                 {cat.items.map((item) => {
                                                     const tagColor = getTagColor(item.tag);
                                                     return (

@@ -158,7 +158,7 @@ function BurningIssuesInner() {
     // ─── TOPIC LIST VIEW ───
     const renderTopicList = () => (
         <div className="min-h-screen bg-[#FAFAF8] pb-24">
-            <main className="max-w-6xl mx-auto px-4 py-6">
+            <main className="max-w-6xl 4k:max-w-[2200px] 5k:max-w-[3200px] mx-auto px-4 py-6">
                 {isLoading ? (
                     <div className="flex items-center justify-center py-20">
                         <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#D97706]" />
@@ -170,7 +170,7 @@ function BurningIssuesInner() {
                         <p className="text-gray-500">Check back soon for important updates</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 4k:grid-cols-6 5k:grid-cols-8 gap-4 md:gap-5">
                         {issues.map((issue) => {
                             const coverImage = issue.images?.[0];
                             const imageCount = issue.images?.length || 0;

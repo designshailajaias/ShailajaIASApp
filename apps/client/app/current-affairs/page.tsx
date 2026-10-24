@@ -46,7 +46,7 @@ export default function CurrentAffairsPage() {
   return (
     <div className="min-h-screen bg-[#FAFAF8] pb-24 font-body">
       {/* Main Content — pt-16 accounts for global fixed Header */}
-      <main className="pt-20 px-4 md:px-8 max-w-7xl mx-auto space-y-10">
+      <main className="pt-20 px-4 md:px-8 max-w-7xl 4k:max-w-[2400px] 5k:max-w-[3400px] mx-auto space-y-10">
 
         {/* Daily Updates Section */}
         <section className="animate-fade-in-up">
@@ -82,7 +82,7 @@ export default function CurrentAffairsPage() {
           <h2 className="text-[11px] font-bold text-[#64748B] mb-4 tracking-[0.2em] uppercase">
             Resources
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 4k:grid-cols-4 5k:grid-cols-5 gap-4 4k:gap-6">
             {resources.map((item, idx) => (
               <button
                 key={idx}

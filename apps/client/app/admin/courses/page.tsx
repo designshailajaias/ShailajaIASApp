@@ -528,7 +528,7 @@ export default function UnifiedCoursesAdminPage() {
                                     </button>
                                 </div>
                             ) : (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 4k:grid-cols-3 5k:grid-cols-4 gap-6 4k:gap-8">
                                     {groups.map((g) => (
                                         <div key={g._id} className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
                                             <div>

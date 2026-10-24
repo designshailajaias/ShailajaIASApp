@@ -5,7 +5,7 @@ import Link from 'next/link';
 export default function CaPrelimsPage() {
     return (
         <div className="min-h-screen bg-[#FAFAF8] pb-24 font-body">
-            <main className="pt-20 px-4 md:px-8 max-w-5xl mx-auto">
+            <main className="pt-20 px-4 md:px-8 max-w-5xl 4k:max-w-[2000px] 5k:max-w-[2800px] mx-auto">
                 <section className="animate-fade-in-up">
                     <div className="bg-white rounded-2xl p-8 md:p-12 shadow-sm border border-gray-100 text-center">
                         {/* Icon */}

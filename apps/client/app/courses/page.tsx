@@ -40,18 +40,18 @@ export default function StudentCoursesPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#FAFAF8] py-8 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-6xl mx-auto">
+        <div className="min-h-screen bg-[#FAFAF8] py-8 px-4 sm:px-6 lg:px-8 4k:px-16">
+            <div className="max-w-6xl 4k:max-w-[2400px] 5k:max-w-[3400px] mx-auto">
                 {/* Header Banner */}
-                <div className="bg-[#1E3A5F] text-white rounded-3xl p-8 mb-10 shadow-lg relative overflow-hidden">
-                    <div className="relative z-10 max-w-2xl">
-                        <span className="inline-block px-3 py-1 bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-semibold rounded-full mb-3 uppercase tracking-widest">
+                <div className="bg-[#1E3A5F] text-white rounded-3xl p-8 4k:p-12 mb-10 shadow-lg relative overflow-hidden">
+                    <div className="relative z-10 max-w-2xl 4k:max-w-4xl">
+                        <span className="inline-block px-3 py-1 bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs 4k:text-sm font-semibold rounded-full mb-3 uppercase tracking-widest">
                             UPSC CSE Comprehensive Video Courses
                         </span>
-                        <h1 className="text-3xl sm:text-4xl font-serif font-bold text-white mb-3">
+                        <h1 className="text-3xl sm:text-4xl 4k:text-5xl font-serif font-bold text-white mb-3">
                             Video Lecture Series &amp; Study Modules
                         </h1>
-                        <p className="text-slate-300 text-sm leading-relaxed">
+                        <p className="text-slate-300 text-sm 4k:text-base leading-relaxed">
                             Structured subject lectures, class notes, Prelims practice tests, and Mains answer writing modules tailored for UPSC Civil Services Preparation.
                         </p>
                     </div>
@@ -71,7 +71,7 @@ export default function StudentCoursesPage() {
                         </p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 4k:grid-cols-4 5k:grid-cols-5 gap-6 4k:gap-8">
                         {courses.map((course) => (
                             <div
                                 key={course._id}

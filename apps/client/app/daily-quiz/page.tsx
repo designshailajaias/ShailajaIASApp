@@ -232,7 +232,7 @@ function DailyQuizInner() {
     return (
         <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans">
             {/* Header Controls */}
-            <div className="max-w-4xl mx-auto w-full px-4 pt-2 pb-2">
+            <div className="max-w-4xl 4k:max-w-6xl 5k:max-w-7xl mx-auto w-full px-4 pt-2 pb-2">
 
                 <div className="flex items-center justify-between gap-4 mb-4">
                     {/* Date Picker Button-style */}
@@ -306,7 +306,7 @@ function DailyQuizInner() {
             </div>
 
             {/* Content */}
-            <div className="flex-1 max-w-4xl mx-auto w-full px-4 pb-12">
+            <div className="flex-1 max-w-4xl 4k:max-w-6xl 5k:max-w-7xl mx-auto w-full px-4 pb-12">
                 {isLoading ? (
                     <div className="flex items-center justify-center py-20">
                         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#1E3A5F]"></div>

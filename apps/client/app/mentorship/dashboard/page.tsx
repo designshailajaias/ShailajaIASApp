@@ -927,7 +927,7 @@ export default function MentorshipDashboardPage() {
         <div className="min-h-screen bg-[#FAFAF8] text-[#1E293B] font-sans pb-12">
             {/* Header Navigation Bar */}
             <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
-                <div className="max-w-6xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+                <div className="max-w-6xl 4k:max-w-[2200px] 5k:max-w-[3200px] mx-auto px-4 sm:px-6 4k:px-12 h-20 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <span className="font-serif text-2xl font-bold text-[#1E3A5F]">ShailajaIAS</span>
                         <span className="text-xs tracking-widest text-slate-500 uppercase border-l border-slate-300 pl-3 font-semibold">
@@ -979,7 +979,7 @@ export default function MentorshipDashboardPage() {
             </header>
 
             {/* Navigation Tabs Bar */}
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-6">
+            <div className="max-w-6xl 4k:max-w-[2200px] 5k:max-w-[3200px] mx-auto px-4 sm:px-6 4k:px-12 pt-6">
                 <div className="flex items-center gap-2 border-b border-slate-200">
                     {[
                         { id: 'daily', label: '• Daily Task' },
@@ -1007,7 +1007,7 @@ export default function MentorshipDashboardPage() {
             </div>
 
             {/* Main Content Area */}
-            <main className="max-w-6xl mx-auto px-4 sm:px-6 pt-6">
+            <main className="max-w-6xl 4k:max-w-[2200px] 5k:max-w-[3200px] mx-auto px-4 sm:px-6 4k:px-12 pt-6">
                 {!userHasMentorshipPurchased && (
                     <div className="mb-6 bg-[#fff0e6] border border-[#ffd8c2] rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
                         <div className="flex items-center gap-3">
@@ -1576,8 +1576,10 @@ export default function MentorshipDashboardPage() {
 
                                                 <Link
                                                     href={`/tests/prelims-test-series${activeCard.ptsSeriesId ? `?id=${activeCard.ptsSeriesId}&test=${activeCard.ptsTestIndex ?? 0}` : ''}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
                                                     onClick={() => handleMarkOverallTask(activeCard.tag, activeCard.dayNumber, 'completed', activeCard.courseId)}
-                                                    className="px-6 py-2.5 bg-[#D97706] hover:bg-[#B45309] text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5"
+                                                    className="px-6 py-2.5 bg-[#D97706] hover:bg-[#B45309] text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
                                                 >
                                                     <span>📝</span> Go to Prelims Test Series →
                                                 </Link>
@@ -1707,8 +1709,10 @@ export default function MentorshipDashboardPage() {
 
                                                 <Link
                                                     href={`/tests/mains-test-series${activeCard.mtsSeriesId ? `?id=${activeCard.mtsSeriesId}&test=${activeCard.mtsTestIndex ?? 0}` : ''}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
                                                     onClick={() => handleMarkOverallTask(activeCard.tag, activeCard.dayNumber, 'completed', activeCard.courseId)}
-                                                    className="px-6 py-2.5 bg-[#0D9488] hover:bg-[#0A746B] text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5"
+                                                    className="px-6 py-2.5 bg-[#0D9488] hover:bg-[#0A746B] text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
                                                 >
                                                     <span>✍️</span> Go to Mains Test Series →
                                                 </Link>
@@ -2553,7 +2557,7 @@ export default function MentorshipDashboardPage() {
                                         {activeModal.item.description}
                                     </p>
                                 )}
-                                <div className="pt-4 border-t border-[#f0e6d4] flex justify-end gap-3">
+                                <div className="sticky bottom-0 bg-[#fffdf8]/95 backdrop-blur-md pt-4 pb-2 border-t border-[#f0e6d4] flex justify-end gap-3 z-20">
                                     <button
                                         onClick={() => setActiveModal(null)}
                                         className="px-5 py-2.5 rounded-xl border border-[#e3d5bd] text-xs font-bold text-[#787163]"
@@ -2621,7 +2625,7 @@ export default function MentorshipDashboardPage() {
                                     )}
                                 </div>
 
-                                <div className="pt-4 border-t border-[#f0e6d4] flex justify-end gap-3">
+                                <div className="sticky bottom-0 bg-[#fffdf8]/95 backdrop-blur-md pt-4 pb-2 border-t border-[#f0e6d4] flex justify-end gap-3 z-20">
                                     <button
                                         onClick={() => setActiveModal(null)}
                                         className="px-5 py-2.5 rounded-xl border border-[#e3d5bd] text-xs font-bold text-[#787163]"
@@ -2730,7 +2734,7 @@ export default function MentorshipDashboardPage() {
                                     </div>
                                 )}
 
-                                <div className="pt-4 border-t border-[#f0e6d4] flex justify-end gap-3">
+                                <div className="sticky bottom-0 bg-[#fffdf8]/95 backdrop-blur-md pt-4 pb-2 border-t border-[#f0e6d4] flex justify-end gap-3 z-20">
                                     <button
                                         onClick={() => setActiveModal(null)}
                                         className="px-5 py-2.5 rounded-xl border border-[#e3d5bd] text-xs font-bold text-[#787163]"
@@ -2848,7 +2852,7 @@ export default function MentorshipDashboardPage() {
                                     })()
                                 )}
 
-                                <div className="pt-4 border-t border-[#f0e6d4] flex justify-end gap-3">
+                                <div className="sticky bottom-0 bg-[#fffdf8]/95 backdrop-blur-md pt-4 pb-2 border-t border-[#f0e6d4] flex justify-end gap-3 z-20">
                                     <button
                                         onClick={() => setActiveModal(null)}
                                         className="px-5 py-2.5 rounded-xl border border-[#e3d5bd] text-xs font-bold text-[#787163]"

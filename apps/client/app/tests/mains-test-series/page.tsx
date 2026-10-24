@@ -246,7 +246,7 @@ export default function MainsTestSeriesPage() {
     if (seriesList.length === 0) {
         return (
             <div className="min-h-screen bg-[#FAFAF8] pb-24 font-body">
-                <main className="pt-20 px-4 md:px-8 max-w-5xl mx-auto">
+                <main className="pt-20 px-4 md:px-8 max-w-5xl 4k:max-w-[2000px] 5k:max-w-[2800px] mx-auto">
                     <section className="animate-fade-in-up">
                         <div className="bg-white rounded-2xl p-8 md:p-12 shadow-sm border border-gray-100 text-center">
                             <div className="mx-auto w-20 h-20 rounded-2xl bg-gradient-to-br from-[#E65100] to-[#FF9800] flex items-center justify-center mb-6 shadow-lg">
@@ -271,7 +271,7 @@ export default function MainsTestSeriesPage() {
     if (seriesList.length > 1 && !selectedSeries) {
         return (
             <div className="min-h-screen bg-[#FAFAF8] pb-24 font-body">
-                <main className="pt-20 px-4 md:px-8 max-w-5xl mx-auto">
+                <main className="pt-20 px-4 md:px-8 max-w-5xl 4k:max-w-[2000px] 5k:max-w-[2800px] mx-auto">
                     <div className="mb-6">
                         <Link href="/tests" className="inline-flex items-center gap-2 text-sm font-semibold text-[#D97706] hover:text-[#B45309] transition-colors">
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
@@ -312,7 +312,7 @@ export default function MainsTestSeriesPage() {
     // Main detail view
     return (
         <div className="min-h-screen bg-[#FAFAF8] pb-24 font-body">
-            <main className="pt-20 px-4 md:px-8 max-w-3xl mx-auto">
+            <main className="pt-20 px-4 md:px-8 max-w-3xl 4k:max-w-[1800px] 5k:max-w-[2400px] mx-auto">
                 {/* Back nav */}
                 <div className="mb-4">
                     {seriesList.length > 1 ? (

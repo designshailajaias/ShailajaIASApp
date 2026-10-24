@@ -305,7 +305,7 @@ export default function AdminMentorshipPage() {
                     </button>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 4k:grid-cols-3 5k:grid-cols-4 gap-6 4k:gap-8">
                     {courses.map(course => (
                         <div
                             key={course._id}

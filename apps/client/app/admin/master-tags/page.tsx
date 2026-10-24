@@ -158,9 +158,9 @@ export default function MasterTagsPage() {
             </div>
 
             {/* Main Content Layout: Tags Grid + Inspector Drawer */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 4k:grid-cols-4 gap-8">
                 {/* Left Column: Master Tags Cards List */}
-                <div className="lg:col-span-2 space-y-4">
+                <div className="lg:col-span-2 4k:col-span-3 space-y-4">
                     {isLoading ? (
                         <div className="flex items-center justify-center py-20 bg-white rounded-2xl border border-slate-200 shadow-sm">
                             <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-teal-600" />
@@ -176,7 +176,7 @@ export default function MasterTagsPage() {
                             </button>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 4k:grid-cols-3 gap-4">
                             {tags.map((t) => {
                                 const isInspecting = selectedTagForInspector?._id === t._id;
                                 return (

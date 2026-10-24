@@ -511,7 +511,7 @@ interface MasterTag {
                 </div>
             ) : (
                 /* EDIT / CREATE FORM VIEW */
-                <div className="max-w-6xl mx-auto">
+                <div className="max-w-6xl 4k:max-w-full mx-auto">
                     <div className="flex items-center justify-between mb-8">
                         <div>
                             <button

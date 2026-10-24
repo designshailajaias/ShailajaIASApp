@@ -320,7 +320,8 @@ export default function ArticlesPage() {
                         )}
                     </div>
                 ) : (
-                    <table className="w-full" style={{ tableLayout: 'fixed' }}>
+                    <div className="overflow-x-auto">
+                        <table className="w-full min-w-[700px]" style={{ tableLayout: 'fixed' }}>
                         <thead className="bg-gray-50 border-b border-gray-200">
                             <tr>
                                 <th
@@ -396,6 +397,7 @@ export default function ArticlesPage() {
                             ))}
                         </tbody>
                     </table>
+                    </div>
                 )}
 
                 {/* Pagination */}

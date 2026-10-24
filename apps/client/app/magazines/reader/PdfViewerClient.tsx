@@ -76,7 +76,7 @@ export default function PdfViewerClient() {
         <div className="min-h-screen bg-gray-50 pb-24">
             {/* Controls Bar */}
             <div className="bg-white border-b border-gray-200 sticky top-16 z-20">
-                <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+                <div className="max-w-6xl 4k:max-w-[2200px] 5k:max-w-[3200px] mx-auto px-4 py-3 flex items-center justify-between gap-4">
                     {/* Magazine title */}
                     <span className="text-sm font-semibold text-[#1E3A5F] truncate">{decodeURIComponent(title)}</span>
 
@@ -130,7 +130,7 @@ export default function PdfViewerClient() {
             </div>
 
             {/* PDF Viewer Box */}
-            <div className="max-w-6xl mx-auto px-4 py-6">
+            <div className="max-w-6xl 4k:max-w-[2200px] 5k:max-w-[3200px] mx-auto px-4 py-6">
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
                     {/* PDF toolbar strip */}
                     <div className="flex items-center justify-between px-5 py-3 border-b border-gray-100 bg-gray-50">

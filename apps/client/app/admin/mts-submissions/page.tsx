@@ -270,7 +270,7 @@ export default function AdminMtsSubmissionsPage() {
                     <div className="text-center py-12 text-slate-400 text-sm">No submissions found</div>
                 ) : (
                     <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
+                        <table className="w-full text-sm min-w-[800px]">
                             <thead className="bg-slate-50 border-b border-slate-200">
                                 <tr>
                                     <th className="px-3 py-3 text-left">

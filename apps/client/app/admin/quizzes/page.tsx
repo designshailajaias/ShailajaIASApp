@@ -113,70 +113,72 @@ export default function QuizzesPage() {
                         </Link>
                     </div>
                 ) : (
-                    <table className="w-full">
-                        <thead className="bg-gray-50 border-b border-gray-200">
-                            <tr>
-                                <th className="text-left px-6 py-4 text-sm font-medium text-gray-500">Title</th>
-                                <th className="text-left px-6 py-4 text-sm font-medium text-gray-500">Date</th>
-                                <th className="text-left px-6 py-4 text-sm font-medium text-gray-500">Tags</th>
-                                <th className="text-right px-6 py-4 text-sm font-medium text-gray-500">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                            {filteredQuizzes.map((quiz) => (
-                                <tr key={quiz._id} className="hover:bg-gray-50">
-                                    <td className="px-6 py-4">
-                                        <span className="font-semibold text-gray-900">{quiz.title}</span>
-                                        {quiz.setName && (
-                                            <span className="ml-2 text-xs bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded font-mono">
-                                                {quiz.setName}
-                                            </span>
-                                        )}
-                                    </td>
-                                    <td className="px-6 py-4 text-sm text-gray-500">
-                                        {new Date(quiz.date).toLocaleDateString('en-IN', { timeZone: 'UTC' })}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex flex-wrap gap-1">
-                                            {quiz.tags && quiz.tags.length > 0 ? (
-                                                quiz.tags.map((tag) => {
-                                                    let tagStyle = 'bg-gray-100 text-gray-600 border border-gray-200';
-                                                    if (tag === 'prelims-practice') {
-                                                        tagStyle = 'bg-purple-100 text-purple-800 border border-purple-200 font-semibold';
-                                                    } else if (tag === 'prelims-test-series') {
-                                                        tagStyle = 'bg-blue-100 text-blue-800 border border-blue-200 font-semibold';
-                                                    } else {
-                                                        tagStyle = 'bg-amber-50 text-amber-800 border border-amber-200 font-medium';
-                                                    }
-                                                    return (
-                                                        <span key={tag} className={`px-2 py-0.5 rounded text-xs lowercase ${tagStyle}`}>
-                                                            {tag}
-                                                        </span>
-                                                    );
-                                                })
-                                            ) : (
-                                                <span className="text-gray-400 text-xs italic">—</span>
-                                            )}
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <Link
-                                            href={`/admin/quizzes/${quiz._id}`}
-                                            className="text-blue-600 hover:underline text-sm mr-4"
-                                        >
-                                            Edit
-                                        </Link>
-                                         <button
-                                             onClick={() => setDeleteTarget({ id: quiz._id, title: quiz.title })}
-                                             className="text-red-600 hover:underline text-sm"
-                                         >
-                                             Delete
-                                         </button>
-                                    </td>
+                    <div className="overflow-x-auto">
+                        <table className="w-full min-w-[700px]">
+                            <thead className="bg-gray-50 border-b border-gray-200">
+                                <tr>
+                                    <th className="text-left px-6 py-4 text-sm font-medium text-gray-500">Title</th>
+                                    <th className="text-left px-6 py-4 text-sm font-medium text-gray-500">Date</th>
+                                    <th className="text-left px-6 py-4 text-sm font-medium text-gray-500">Tags</th>
+                                    <th className="text-right px-6 py-4 text-sm font-medium text-gray-500">Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="divide-y divide-gray-200">
+                                {filteredQuizzes.map((quiz) => (
+                                    <tr key={quiz._id} className="hover:bg-gray-50">
+                                        <td className="px-6 py-4">
+                                            <span className="font-semibold text-gray-900">{quiz.title}</span>
+                                            {quiz.setName && (
+                                                <span className="ml-2 text-xs bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded font-mono">
+                                                    {quiz.setName}
+                                                </span>
+                                            )}
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-gray-500">
+                                            {new Date(quiz.date).toLocaleDateString('en-IN', { timeZone: 'UTC' })}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex flex-wrap gap-1">
+                                                {quiz.tags && quiz.tags.length > 0 ? (
+                                                    quiz.tags.map((tag) => {
+                                                        let tagStyle = 'bg-gray-100 text-gray-600 border border-gray-200';
+                                                        if (tag === 'prelims-practice') {
+                                                            tagStyle = 'bg-purple-100 text-purple-800 border border-purple-200 font-semibold';
+                                                        } else if (tag === 'prelims-test-series') {
+                                                            tagStyle = 'bg-blue-100 text-blue-800 border border-blue-200 font-semibold';
+                                                        } else {
+                                                            tagStyle = 'bg-amber-50 text-amber-800 border border-amber-200 font-medium';
+                                                        }
+                                                        return (
+                                                            <span key={tag} className={`px-2 py-0.5 rounded text-xs lowercase ${tagStyle}`}>
+                                                                {tag}
+                                                            </span>
+                                                        );
+                                                    })
+                                                ) : (
+                                                    <span className="text-gray-400 text-xs italic">—</span>
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            <Link
+                                                href={`/admin/quizzes/${quiz._id}`}
+                                                className="text-blue-600 hover:underline text-sm mr-4"
+                                            >
+                                                Edit
+                                            </Link>
+                                             <button
+                                                 onClick={() => setDeleteTarget({ id: quiz._id, title: quiz.title })}
+                                                 className="text-red-600 hover:underline text-sm"
+                                             >
+                                                 Delete
+                                             </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 )}
             </div>
 

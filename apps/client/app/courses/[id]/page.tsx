@@ -704,14 +704,14 @@ export default function StudentCoursePlayerPage() {
     return (
         <div className="min-h-screen bg-[#FAFAF8] text-slate-900 font-body">
             {/* Main 2-Column Layout */}
-            <div className="max-w-7xl mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="max-w-7xl 4k:max-w-[2400px] 5k:max-w-[3400px] mx-auto p-4 sm:p-6 4k:p-10 grid grid-cols-1 lg:grid-cols-12 gap-6 4k:gap-10">
                 {/* Left Sidebar: Course Index & Lecture List */}
-                <div className="lg:col-span-4 bg-white rounded-2xl border border-slate-200 p-4 shadow-sm h-[780px] flex flex-col">
+                <div className="lg:col-span-4 4k:col-span-3 bg-white rounded-2xl border border-slate-200 p-4 4k:p-6 shadow-sm h-[780px] 4k:h-[950px] flex flex-col">
                     <div className="pb-3 border-b border-slate-100 flex items-center justify-between">
-                        <h2 className="font-serif font-bold text-slate-900 text-sm sm:text-base flex items-center gap-2">
+                        <h2 className="font-serif font-bold text-slate-900 text-sm sm:text-base 4k:text-lg flex items-center gap-2">
                             📚 Course Index &amp; Lectures
                         </h2>
-                        <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-bold">
+                        <span className="text-[10px] 4k:text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-bold">
                             Live List
                         </span>
                     </div>
@@ -729,7 +729,7 @@ export default function StudentCoursePlayerPage() {
                 </div>
 
                 {/* Right Column: Player & Dynamic Action Tabs */}
-                <div className="lg:col-span-8 flex flex-col gap-6">
+                <div className="lg:col-span-8 4k:col-span-9 flex flex-col gap-6 4k:gap-8">
                     {/* Multiple Videos Playlist Bar */}
                     {nodeVideos.length > 1 && (
                         <div className="bg-white rounded-2xl border border-slate-200 p-3 shadow-xs flex items-center gap-2 overflow-x-auto">

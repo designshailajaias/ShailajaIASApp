@@ -896,7 +896,7 @@ function PrelimsTestSeriesInner() {
             <div className="fixed inset-0 z-50 overflow-y-auto bg-[#FAFAF8] pb-16 font-body animate-fade-in flex flex-col">
                 {/* Fixed/Sticky Exam Top Bar */}
                 <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-xs px-4 md:px-8 py-3">
-                    <div className="max-w-4xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
+                    <div className="max-w-4xl 4k:max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
                         <div className="min-w-0">
                             <button
                                 onClick={() => {
@@ -969,7 +969,7 @@ function PrelimsTestSeriesInner() {
                     </div>
                 </header>
 
-                <main className="px-4 md:px-8 max-w-4xl mx-auto w-full flex-1 py-6">
+                <main className="px-4 md:px-8 max-w-4xl 4k:max-w-6xl mx-auto w-full flex-1 py-6">
 
                         {/* Metadata row */}
                         {!showScorecard && !showOverview && !showReview && (
@@ -1653,7 +1653,7 @@ function PrelimsTestSeriesInner() {
 
     return (
         <div className="min-h-screen bg-[#FAFAF8] pb-24 font-body animate-fade-in">
-            <main className="pt-20 px-4 md:px-8 max-w-5xl mx-auto">
+            <main className="pt-20 px-4 md:px-8 max-w-5xl 4k:max-w-[2000px] 5k:max-w-[2800px] mx-auto">
                 <section className="animate-fade-in-up">
                     {/* Title Header */}
                     <div className="flex items-center gap-4 mb-8">

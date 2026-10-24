@@ -262,7 +262,7 @@ export default function AdminMainsPracticeTestPage() {
     if (isEditing) {
         return (
             <div className="p-8 min-h-screen bg-slate-50 font-body">
-                <div className="max-w-4xl mx-auto">
+                <div className="max-w-4xl 4k:max-w-full mx-auto">
                     <button onClick={() => setIsEditing(false)} className="text-sm text-slate-500 hover:text-slate-700 mb-4 flex items-center gap-1">← Back to list</button>
                     <h1 className="text-2xl font-bold text-slate-800 font-headline mb-6">{form._id ? 'Edit' : 'Create'} Mains Practice Test</h1>
 

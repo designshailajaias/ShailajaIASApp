@@ -64,7 +64,7 @@ export default function MainsPracticeTestListPage() {
 
     return (
         <div className="min-h-screen bg-[#FAFAF8] pb-24 font-body">
-            <main className="pt-20 px-4 md:px-8 max-w-3xl mx-auto">
+            <main className="pt-20 px-4 md:px-8 max-w-3xl 4k:max-w-[1800px] 5k:max-w-[2400px] mx-auto">
                 {/* Back Nav */}
                 <div className="mb-4">
                     <Link href="/tests" className="inline-flex items-center gap-2 text-sm font-semibold text-[#D97706] hover:text-[#B45309] transition-colors">

@@ -449,7 +449,7 @@ export default function PrelimsPracticeTestPage() {
 
             {/* CREATE VIEW */}
             {viewMode === 'create' && (
-                <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-8 max-w-4xl mx-auto">
+                <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-8 max-w-4xl 4k:max-w-full mx-auto">
                     <div className="flex items-center justify-between mb-6 border-b border-slate-100 pb-4">
                         <div>
                             <h2 className="text-xl font-bold text-slate-800 font-headline">Create Practice Quiz</h2>
@@ -638,7 +638,7 @@ export default function PrelimsPracticeTestPage() {
 
             {/* IMPORT VIEW */}
             {viewMode === 'import' && (
-                <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-8 max-w-2xl mx-auto">
+                <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-8 max-w-2xl 4k:max-w-4xl mx-auto">
                     <div className="flex items-center justify-between mb-6 border-b border-slate-100 pb-4">
                         <div>
                             <h2 className="text-xl font-bold text-slate-800 font-headline">Import Excel Practice Test</h2>

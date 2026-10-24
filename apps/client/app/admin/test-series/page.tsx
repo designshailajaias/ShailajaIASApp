@@ -90,7 +90,7 @@ export default function AdminTestSeriesHubPage() {
             </div>
 
             {/* Grid layout for Admin Hub */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 4k:grid-cols-4 gap-6 max-w-5xl 4k:max-w-full">
                 {TEST_SUBMODULES.map((sub, index) => {
                     const cardContent = (
                         <div

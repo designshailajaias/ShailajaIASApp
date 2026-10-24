@@ -143,7 +143,7 @@ export default function MagazinesPage() {
 
             {/* Category Tabs */}
             <div className="bg-white border-b border-gray-200 sticky top-[106px] z-30">
-                <div className="max-w-5xl mx-auto px-4 py-3">
+                <div className="max-w-5xl 4k:max-w-[2000px] 5k:max-w-[2800px] mx-auto px-4 py-3">
                     <div className="flex gap-2 overflow-x-auto pb-1 hide-scrollbar">
                         {CATEGORIES.map((cat) => (
                             <button
@@ -162,7 +162,7 @@ export default function MagazinesPage() {
             </div>
 
             {/* Content */}
-            <div className="max-w-5xl mx-auto px-4 py-6">
+            <div className="max-w-5xl 4k:max-w-[2000px] 5k:max-w-[2800px] mx-auto px-4 py-6">
                 {isLoading ? (
                     <div className="flex items-center justify-center py-16">
                         <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#1E3A5F]"></div>
@@ -202,7 +202,7 @@ export default function MagazinesPage() {
                                 {/* Magazine Grid (Collapsible) */}
                                 {expandedYears.has(year) && (
                                     <div className="px-6 pb-6 border-t border-gray-100 mt-2 pt-4">
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 4k:grid-cols-3 5k:grid-cols-4 gap-4 4k:gap-6">
                                             {groupedByYear[year].map((mag) => (
                                                 <div
                                                     key={mag._id}

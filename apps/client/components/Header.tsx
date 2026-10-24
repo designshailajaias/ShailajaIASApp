@@ -15,12 +15,12 @@ export default function Header() {
 
 
     return (
-        <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 h-16">
-            <div className="max-w-7xl mx-auto w-full h-full flex items-center justify-between px-4 md:px-8">
+        <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 h-16 4k:h-20">
+            <div className="max-w-7xl 4k:max-w-[2400px] 5k:max-w-[3400px] mx-auto w-full h-full flex items-center justify-between px-4 md:px-8 4k:px-16">
                 {/* Brand Logo — links to landing */}
                 <Link href="/" className="flex items-center gap-x-3 group">
                     {/* Zoom into symbol to crop whitespace */}
-                    <div className="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
+                    <div className="relative w-12 h-12 4k:w-14 4k:h-14 rounded-full overflow-hidden flex-shrink-0">
                         <Image
                             src="/images/symbol.png"
                             alt="Shailaja IAS"
@@ -34,16 +34,16 @@ export default function Header() {
                         alt="Shailaja — Justice for IAS Aspirants"
                         width={90}
                         height={21}
-                        className="hidden sm:block object-contain"
+                        className="hidden sm:block object-contain 4k:scale-125"
                         priority
                     />
                 </Link>
 
                 {/* Top Navigation Links for Desktop */}
-                <nav className="hidden md:flex items-center gap-6 mx-6">
+                <nav className="hidden md:flex items-center gap-6 4k:gap-10 mx-6">
                     <Link
                         href="/courses"
-                        className={`text-xs font-bold transition-colors ${
+                        className={`text-xs 4k:text-sm font-bold transition-colors ${
                             pathname?.startsWith('/courses') ? 'text-[#D97706]' : 'text-slate-700 hover:text-[#1E3A5F]'
                         }`}
                     >
@@ -51,7 +51,7 @@ export default function Header() {
                     </Link>
                     <Link
                         href="/mentorship"
-                        className={`text-xs font-bold transition-colors ${
+                        className={`text-xs 4k:text-sm font-bold transition-colors ${
                             pathname?.startsWith('/mentorship') ? 'text-[#D97706]' : 'text-slate-700 hover:text-[#1E3A5F]'
                         }`}
                     >
@@ -59,7 +59,7 @@ export default function Header() {
                     </Link>
                     <Link
                         href="/current-affairs"
-                        className={`text-xs font-bold transition-colors ${
+                        className={`text-xs 4k:text-sm font-bold transition-colors ${
                             pathname?.startsWith('/current-affairs') ? 'text-[#D97706]' : 'text-slate-700 hover:text-[#1E3A5F]'
                         }`}
                     >
@@ -67,7 +67,7 @@ export default function Header() {
                     </Link>
                     <Link
                         href="/tests"
-                        className={`text-xs font-bold transition-colors ${
+                        className={`text-xs 4k:text-sm font-bold transition-colors ${
                             pathname?.startsWith('/tests') ? 'text-[#D97706]' : 'text-slate-700 hover:text-[#1E3A5F]'
                         }`}
                     >
@@ -75,7 +75,7 @@ export default function Header() {
                     </Link>
                     <Link
                         href="/resources"
-                        className={`text-xs font-bold transition-colors ${
+                        className={`text-xs 4k:text-sm font-bold transition-colors ${
                             pathname?.startsWith('/resources') ? 'text-[#D97706]' : 'text-slate-700 hover:text-[#1E3A5F]'
                         }`}
                     >

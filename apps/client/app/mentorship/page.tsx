@@ -236,7 +236,7 @@ export default function MentorshipLandingPage() {
             {/* ─── Sticky Join Bar (Scrolled Detail Mode) ────────────────────────────── */}
             {view === 'detail' && scrolled && (
                 <div className="fixed top-16 left-0 right-0 z-30 bg-amber-50 border-b border-amber-200 shadow-sm animate-in slide-in-from-top duration-200">
-                    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between gap-4">
+                    <div className="max-w-5xl 4k:max-w-[2000px] 5k:max-w-[2800px] mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between gap-4">
                         <div className="min-w-0">
                             <h3 className="text-sm font-bold text-[#1E3A5F] truncate">{currentCourse.title}</h3>
                             <p className="text-xs text-gray-600">{currentCourse.coverage}</p>
@@ -260,7 +260,7 @@ export default function MentorshipLandingPage() {
 
             {/* ─── LIST VIEW ───────────────────────────────────────────────────────── */}
             {view === 'list' && (
-                <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+                <main className="max-w-7xl 4k:max-w-[2400px] 5k:max-w-[3400px] mx-auto px-4 sm:px-6 lg:px-8 4k:px-16 py-6 4k:py-10 space-y-8">
                     {/* Hero Section */}
                     <section className="bg-[#1E3A5F] text-white rounded-3xl p-6 sm:p-10 shadow-lg relative overflow-hidden">
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
@@ -401,7 +401,7 @@ export default function MentorshipLandingPage() {
                     </section>
 
                     {/* Courses Grid */}
-                    <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <section className="grid grid-cols-1 md:grid-cols-2 4k:grid-cols-3 5k:grid-cols-4 gap-6 4k:gap-8">
                         {filteredCourses.map((course, idx) => {
                             const isAvailable = course.availability === 'Start Now';
                             return (
@@ -511,7 +511,7 @@ export default function MentorshipLandingPage() {
 
             {/* ─── DETAIL VIEW ──────────────────────────────────────────────────────── */}
             {view === 'detail' && (
-                <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+                <main className="max-w-7xl 4k:max-w-[2400px] 5k:max-w-[3400px] mx-auto px-4 sm:px-6 lg:px-8 4k:px-16 py-6 4k:py-10 space-y-8">
                     {/* Top Detail Navigation Bar */}
                     <div className="flex items-center justify-between">
                         <button

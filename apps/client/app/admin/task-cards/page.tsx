@@ -958,7 +958,7 @@ function TaskCardsManagerContent() {
 
                     {/* Set Metadata Editor */}
                     <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 4k:grid-cols-6 gap-4">
                             <div className="md:col-span-2 space-y-1">
                                 <label className="text-xs font-bold text-slate-700">Set Name / Subject Track *</label>
                                 <input
@@ -1254,7 +1254,7 @@ function TaskCardsManagerContent() {
 
                     {/* Group Metadata & Linked Mentorship Status */}
                     <div className="bg-white p-5 rounded-2xl border border-indigo-100 shadow-2xs space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 4k:grid-cols-5 gap-4">
                             <div className="md:col-span-2 space-y-1">
                                 <label className="text-xs font-bold text-slate-700">Group Name (Used to Sell in Mentorship Card) *</label>
                                 <input

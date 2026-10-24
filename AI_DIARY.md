@@ -1811,6 +1811,37 @@ Admin creates content
   3. **Universal Preview & Production CORS**: Enhanced CORS configuration in `apps/api/src/index.ts` to parse comma-separated `CLIENT_URL` and wildcard match any `*.vercel.app` origin via regex, ensuring all Vercel deployments and previews work out of the box without CORS errors.
   4. **Asset & Build Verification**: Verified that all 31 upload assets (54MB) in `apps/api/uploads/` are tracked in git and served via `/uploads`; verified both `pnpm --filter api build` and `pnpm --filter client run build` (all 58 routes) pass with 0 errors.
 
+### Session: 2026-10-24 (Part 2) — End-to-End Multi-Device Responsiveness (Mobile, Tablet, Desktop, 2K 1440p, 4K 2160p) & Bugsheet Resolution
+- **Who:** AI (Antigravity)
+- **Goal:** Complete end-to-end responsiveness overhaul supporting Mobile (360px+), Tablet (768px+), Desktop (1080p), 2K QHD (2560×1440), and 4K UHD (3840×2160) across all Admin and User portal pages, resolving Bugsheet Row 34, Row 21, and Rows 24 & 25.
+- **Architectural & Design System Upgrades:**
+  1. **Tailwind Breakpoint System (`tailwind.config.js`)**: Added extended high-resolution screen breakpoints: `3xl: '1920px'`, `4k: '2560px'`, and `5k: '3840px'` to eliminate wasted whitespace and enable high-DPI scaling.
+  2. **Admin Portal Drawer & Ultra-wide Scaling (`admin/layout.tsx` & `admin/page.tsx`)**:
+     - *Mobile & Tablet (< 1024px)*: Added sticky top bar with hamburger menu toggle (`☰`), backdrop overlay, and slide-out navigation drawer (`w-72`), giving page contents 100% width without breaking.
+     - *Desktop & 2K/4K*: Proportional sidebar width (`4k:w-72 5k:w-80`) with scaled typography, and fluid container max-widths (`4k:max-w-[2400px] 5k:max-w-[3400px]`).
+     - *Dashboard KPIs*: Upgraded stats grid to 5 columns with fluid card sizes and quick actions.
+  3. **Global Navigation Scaling (`Header.tsx` & `Breadcrumbs.tsx`)**:
+     - Scaled header container from `max-w-7xl` to `4k:max-w-[2400px] 5k:max-w-[3400px]` with `4k:h-20` height and scaled logo/nav spacing.
+     - Scaled breadcrumbs to match header width with responsive typography and padding.
+  4. **Student Portal Grid & Player Responsiveness**:
+     - *Courses (`/courses`)*: Scaled catalog grid up to 5 columns (`4k:grid-cols-4 5k:grid-cols-5`) inside `4k:max-w-[2400px] 5k:max-w-[3400px]`.
+     - *Course Video Player (`/courses/[id]`)*: Implemented 9-col / 3-col ratio for 2K/4K displays with expanded video player and scaled curriculum index height (`4k:h-[950px]`).
+     - *Mentorship Hub (`/mentorship`)*: Scaled list view hero, card grids (`4k:grid-cols-3 5k:grid-cols-4`), and detail view containers up to `4k:max-w-[2400px] 5k:max-w-[3400px]`.
+     - *Mentorship Dashboard (`/mentorship/dashboard`)*: Scaled header, tab bars, and content area up to `4k:max-w-[2200px] 5k:max-w-[3200px]`.
+     - *Current Affairs (`/current-affairs`)*: Scaled daily updates and resource cards up to 5 columns on 4K.
+     - *Magazines (`/magazines`)*: Scaled category tabs, year container, and magazine issue grid up to 4 columns.
+     - *Resources (`/resources`)*: Scaled category items grid up to 4 columns on 4K.
+     - *Burning Issues (`/burning-issues`)*: Scaled issues grid up to 8 columns on 4K (`4k:grid-cols-6 5k:grid-cols-8`).
+     - *Daily Quiz (`/daily-quiz`)*: Scaled test view container up to `4k:max-w-6xl 5k:max-w-7xl`.
+     - *PDF Viewers (`magazines/reader` & `resources/reader`)*: Scaled reading canvas up to `4k:max-w-[2200px] 5k:max-w-[3200px]`.
+  5. **Admin Tables Overflow Protection**:
+     - Added `overflow-x-auto` with `min-w-[700px]` to `min-w-[800px]` to all admin data tables (Articles, Quizzes, Courses, Resources, Master Tags, Users, MTS Submissions, Mentors, Doubts), preventing layout distortion on mobile and allowing tables to expand naturally on 4K.
+- **Bugsheet Test Cases Resolved:**
+  1. **Admin Responsiveness (Sheet 1, Row 34 - FAIL → FIXED)**: Resolved through the comprehensive high-resolution and mobile drawer architecture.
+  2. **Take Test Sticky Controls (Sheet 2, Row 21 - FAIL → FIXED)**: Verified dual-sticky layout across `prelims-test-series` and `prelims-practice-test` so that `✕ Close` is always pinned in the top header and `Submit Test` is pinned in the bottom bar, and added "Finish Practice" button to practice test mode header.
+  3. **Mentorship Take Test Options (Sheet 2, Rows 24 & 25 - FAIL → FIXED)**: Updated "Go to Prelims Test Series →" and "Go to Mains Test Series →" in `mentorship/dashboard/page.tsx` with `target="_blank" rel="noopener noreferrer"` so clicking launches tests in a separate window/tab without losing the mentorship dashboard session.
+- **Verification:** Both API (`tsc`) and Client (`tsc`) compile with 0 errors.
+
 ### Session: 2026-10-24 — Resolution of 11 Failed QA Testcases from Bugsheet.xlsx
 - **Who:** AI (Antigravity)
 - **Goal:** Fix all 11 failed QA test cases across both sheets of `Bugsheet.xlsx` (3 in Admin Portal, 8 in User Webpage) following strict user approval protocol.

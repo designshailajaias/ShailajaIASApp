@@ -74,26 +74,26 @@ export default function AdminDashboard() {
     ];
 
     return (
-        <div className="p-8">
+        <div className="p-4 sm:p-6 4k:p-10">
             {/* Header */}
             <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-                <p className="text-gray-600 mt-1">Welcome back, {user?.name || 'Admin'}!</p>
+                <h1 className="text-2xl sm:text-3xl 4k:text-4xl font-bold text-gray-900">Dashboard</h1>
+                <p className="text-gray-600 4k:text-lg mt-1">Welcome back, {user?.name || 'Admin'}!</p>
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 4k:grid-cols-5 gap-4 sm:gap-6 mb-8">
                 {statCards.map((card) => (
                     <Link
                         key={card.label}
                         href={card.href}
-                        className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
+                        className="bg-white rounded-2xl shadow-xs border border-gray-200 p-5 4k:p-8 hover:shadow-md transition-all hover:-translate-y-0.5"
                     >
-                        <div className={`inline-flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-r ${card.color} mb-4`}>
-                            <span className="text-2xl text-white font-bold">{card.icon}</span>
+                        <div className={`inline-flex items-center justify-center w-12 h-12 4k:w-16 4k:h-16 rounded-xl bg-gradient-to-r ${card.color} mb-4 shadow-sm`}>
+                            <span className="text-2xl 4k:text-3xl text-white font-bold">{card.icon}</span>
                         </div>
-                        <h3 className="text-gray-500 text-sm font-medium">{card.label}</h3>
-                        <p className="text-2xl font-bold text-gray-900 mt-1">
+                        <h3 className="text-gray-500 text-xs 4k:text-sm font-semibold uppercase tracking-wider">{card.label}</h3>
+                        <p className="text-2xl 4k:text-4xl font-extrabold text-gray-900 mt-1">
                             {isLoading ? (
                                 <span className="inline-block w-16 h-6 bg-gray-200 animate-pulse rounded"></span>
                             ) : (
@@ -105,17 +105,17 @@ export default function AdminDashboard() {
             </div>
 
             {/* Quick Actions */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <div className="bg-white rounded-2xl shadow-xs border border-gray-200 p-6 4k:p-8 mb-8">
+                <h2 className="text-lg 4k:text-2xl font-bold text-gray-900 mb-4">Quick Actions</h2>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4">
                     {quickActions.map((action) => (
                         <Link
                             key={action.label}
                             href={action.href}
-                            className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                            className="flex flex-col items-center justify-center p-4 4k:p-6 bg-slate-50 rounded-xl hover:bg-slate-100 transition-all border border-slate-100 hover:border-slate-200"
                         >
-                            <span className="text-3xl mb-2">{action.icon}</span>
-                            <span className="text-sm font-medium text-gray-700">{action.label}</span>
+                            <span className="text-2xl 4k:text-4xl mb-2">{action.icon}</span>
+                            <span className="text-xs 4k:text-sm font-semibold text-gray-700 text-center">{action.label}</span>
                         </Link>
                     ))}
                 </div>
