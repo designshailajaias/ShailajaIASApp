@@ -1811,6 +1811,17 @@ Admin creates content
   3. **Universal Preview & Production CORS**: Enhanced CORS configuration in `apps/api/src/index.ts` to parse comma-separated `CLIENT_URL` and wildcard match any `*.vercel.app` origin via regex, ensuring all Vercel deployments and previews work out of the box without CORS errors.
   4. **Asset & Build Verification**: Verified that all 31 upload assets (54MB) in `apps/api/uploads/` are tracked in git and served via `/uploads`; verified both `pnpm --filter api build` and `pnpm --filter client run build` (all 58 routes) pass with 0 errors.
 
+### Session: 2026-10-24 (Part 3) — Homepage Mentorship Dashboard Direct Visibility & Access
+- **Who:** AI (Antigravity)
+- **Goal:** Provide high-visibility, 1-click access to the Mentorship Dashboard (`/mentorship/dashboard`) directly from the homepage and global navigation.
+- **What Was Built:**
+  1. **Dedicated Mentorship Study Cockpit Card (`app/page.tsx`)**: Added a rich action card on the homepage highlighting the Daily Task Carousel, GS & Optional Roadmap, Daily Study Effort Logger, and Mains Script Submissions, with a prominent `"Open Mentorship Dashboard 🚀"` button.
+  2. **Dual-Action Greeting Card (`app/page.tsx`)**: Added `"Continue Daily Tasks"` / `"Mentorship Dashboard"` button alongside `"My Profile"` with an `"Enrolled Scholar ✓"` badge for active subscribers.
+  3. **Smart Module Routing (`app/page.tsx`)**: Mentorship card in the homepage module grid routes enrolled students directly to `/mentorship/dashboard` with a "Live Dashboard" badge.
+  4. **Global Header Shortcut (`components/Header.tsx`)**: Added `"🚀 Mentorship Dashboard"` action button in the top navigation header on desktop.
+  5. **Mobile Bottom Navigation (`components/BottomNav.tsx`)**: Added direct `"🚀 Dashboard"` navigation tab for mobile devices.
+- **Verification:** Client typecheck (`tsc --noEmit`) passes with 0 errors.
+
 ### Session: 2026-10-24 (Part 2) — End-to-End Multi-Device Responsiveness (Mobile, Tablet, Desktop, 2K 1440p, 4K 2160p) & Bugsheet Resolution
 - **Who:** AI (Antigravity)
 - **Goal:** Complete end-to-end responsiveness overhaul supporting Mobile (360px+), Tablet (768px+), Desktop (1080p), 2K QHD (2560×1440), and 4K UHD (3840×2160) across all Admin and User portal pages, resolving Bugsheet Row 34, Row 21, and Rows 24 & 25.

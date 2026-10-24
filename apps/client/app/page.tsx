@@ -147,6 +147,7 @@ const BANNERS = [
 export default function LandingPage() {
     const router = useRouter();
     const { isLoggedIn, user } = useStudentAuth();
+    const isMentorshipEnrolled = !!(user?.isMentorshipStudent || (user?.purchasedTaskCardGroups && user.purchasedTaskCardGroups.length > 0) || user?.activeTaskCardGroupId);
     const [currentBanner, setCurrentBanner] = useState(0);
     const [quoteIdx, setQuoteIdx] = useState(0);
     const testimonialRef = useRef<HTMLDivElement>(null);
@@ -237,23 +238,83 @@ export default function LandingPage() {
                                 👤
                             </div>
                             <div>
-                                <h3 className="text-sm md:text-base font-bold text-[#1E3A5F]">
-                                    {isLoggedIn ? `Welcome back, ${user?.name || 'Student'}!` : 'Welcome, Aspirant!'}
-                                </h3>
+                                <div className="flex items-center gap-2 flex-wrap">
+                                    <h3 className="text-sm md:text-base font-bold text-[#1E3A5F]">
+                                        {isLoggedIn ? `Welcome back, ${user?.name || 'Student'}!` : 'Welcome, Aspirant!'}
+                                    </h3>
+                                    {isMentorshipEnrolled && (
+                                        <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-200 text-[10px] font-bold rounded-full">
+                                            Enrolled Scholar ✓
+                                        </span>
+                                    )}
+                                </div>
                                 <p className="text-xs text-gray-500 font-medium mt-0.5">
                                     {isLoggedIn 
-                                        ? 'Track your test scores, view saved reports, and manage your doubts.' 
-                                        : 'Log in to track your test reports, save practice tests, and ask doubts.'}
+                                        ? 'Access your daily task cards, track syllabus roadmap progress, and view test analytics.' 
+                                        : 'Log in to track your test reports, complete daily study tasks, and ask doubts.'}
                                 </p>
                             </div>
                         </div>
-                        <button
-                            onClick={() => router.push(isLoggedIn ? '/profile' : '/login')}
-                            className="w-full md:w-auto px-5 py-2.5 bg-[#1E3A5F] hover:bg-[#152C4A] text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 active:scale-[0.98] shrink-0"
-                        >
-                            <span>{isLoggedIn ? 'Go to My Profile' : 'Sign In / Register'}</span>
-                            <span>➡️</span>
-                        </button>
+
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full md:w-auto shrink-0">
+                            <button
+                                onClick={() => router.push('/mentorship/dashboard')}
+                                className="px-5 py-2.5 bg-gradient-to-r from-[#D97706] to-[#B45309] hover:from-[#B45309] hover:to-[#92400E] text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer"
+                            >
+                                <span>🚀</span>
+                                <span>{isMentorshipEnrolled ? 'Continue Daily Tasks' : 'Mentorship Dashboard'}</span>
+                            </button>
+                            <button
+                                onClick={() => router.push(isLoggedIn ? '/profile' : '/login')}
+                                className="px-4 py-2.5 bg-[#1E3A5F] hover:bg-[#152C4A] text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 active:scale-[0.98] cursor-pointer"
+                            >
+                                <span>{isLoggedIn ? 'My Profile' : 'Sign In / Register'}</span>
+                                <span>➡️</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                {/* ══════════════════════════════════════════════════════════ */}
+                {/* MENTORSHIP DASHBOARD FEATURED CARD                        */}
+                {/* ══════════════════════════════════════════════════════════ */}
+                <section className="animate-fade-in-up" style={{ animationDelay: '90ms' }}>
+                    <div className="bg-gradient-to-br from-[#1E3A5F] via-[#24436E] to-[#12243A] text-white rounded-[2rem] p-6 md:p-8 shadow-xl border border-white/10 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+                        <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+                            <div className="max-w-2xl">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <span className="px-3 py-1 bg-amber-500/20 text-amber-300 border border-amber-400/30 text-[11px] font-bold rounded-full uppercase tracking-wider">
+                                        🎯 Study Cockpit
+                                    </span>
+                                    {isMentorshipEnrolled && (
+                                        <span className="px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[11px] font-bold rounded-full uppercase tracking-wider">
+                                            Active Program Enrolled ✓
+                                        </span>
+                                    )}
+                                </div>
+                                <h2 className="text-xl md:text-2xl 4k:text-3xl font-bold font-serif leading-tight mb-2">
+                                    UPSC Integrated Mentorship Dashboard
+                                </h2>
+                                <p className="text-slate-300 text-xs md:text-sm leading-relaxed mb-4">
+                                    Access your personalized daily study plan, cross-course lecture videos, topic-wise practice tests, syllabus roadmap, and 1-on-1 mentor guidance.
+                                </p>
+                                <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-200">
+                                    <span className="px-2.5 py-1 bg-white/10 rounded-lg backdrop-blur-xs font-semibold">📋 Daily Task Carousel</span>
+                                    <span className="px-2.5 py-1 bg-white/10 rounded-lg backdrop-blur-xs font-semibold">🗺️ GS &amp; Optional Roadmap</span>
+                                    <span className="px-2.5 py-1 bg-white/10 rounded-lg backdrop-blur-xs font-semibold">⏱️ Daily Study Effort Logger</span>
+                                    <span className="px-2.5 py-1 bg-white/10 rounded-lg backdrop-blur-xs font-semibold">✍️ Mains Script Submissions</span>
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={() => router.push('/mentorship/dashboard')}
+                                className="w-full lg:w-auto px-7 py-3.5 bg-gradient-to-r from-[#D97706] to-[#B45309] hover:from-[#B45309] hover:to-[#92400E] text-white font-bold text-sm rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 shrink-0 active:scale-[0.98] border border-amber-400/40 cursor-pointer"
+                            >
+                                <span>Open Mentorship Dashboard</span>
+                                <span className="text-lg">🚀</span>
+                            </button>
+                        </div>
                     </div>
                 </section>
 
@@ -263,16 +324,23 @@ export default function LandingPage() {
                 <section className="animate-fade-in-up" style={{ animationDelay: '120ms' }}>
                     <div className="bg-white rounded-[2rem] p-5 md:p-8 shadow-[0_10px_40px_rgba(0,0,0,0.03)] border border-gray-100">
                         <div className="flex items-center justify-around gap-2 md:gap-6 flex-wrap">
-                            {MODULES.map((mod, idx) => (
+                            {MODULES.map((mod, idx) => {
+                                const targetHref = (mod.title === 'Mentorship' && isMentorshipEnrolled) ? '/mentorship/dashboard' : mod.href;
+                                return (
                                 <button
                                     key={idx}
-                                    onClick={() => router.push(mod.href)}
+                                    onClick={() => router.push(targetHref)}
                                     className="relative flex flex-col items-center gap-2 group w-[60px] md:w-[100px]"
                                 >
                                     {/* Free Badge */}
                                     {mod.free && (
                                         <span className="absolute -top-2 right-0 md:-top-1 md:right-1 text-[9px] md:text-[10px] font-extrabold text-red-500 tracking-wide z-10">
                                             Free
+                                        </span>
+                                    )}
+                                    {mod.title === 'Mentorship' && isMentorshipEnrolled && (
+                                        <span className="absolute -top-2 right-0 md:-top-1 md:right-0 text-[8px] font-extrabold bg-emerald-500 text-white px-1 rounded-sm tracking-wide z-10 shadow-xs">
+                                            Live
                                         </span>
                                     )}
 
@@ -293,14 +361,19 @@ export default function LandingPage() {
                                         <p className="text-[10px] md:text-[13px] font-bold text-[#1E3A5F] leading-tight group-hover:text-[#D97706] transition-colors">
                                             {mod.title}
                                         </p>
-                                        {mod.subtitle && (
+                                        {mod.title === 'Mentorship' && isMentorshipEnrolled ? (
+                                            <p className="text-[8px] md:text-[10px] text-emerald-600 font-bold leading-tight mt-0.5">
+                                                Dashboard
+                                            </p>
+                                        ) : mod.subtitle ? (
                                             <p className="text-[8px] md:text-[10px] text-gray-400 font-medium leading-tight mt-0.5">
                                                 {mod.subtitle}
                                             </p>
-                                        )}
+                                        ) : null}
                                     </div>
                                 </button>
-                            ))}
+                                );
+                            })}
                         </div>
                     </div>
                 </section>

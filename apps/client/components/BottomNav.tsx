@@ -6,9 +6,9 @@ import { usePathname } from 'next/navigation';
 const navItems = [
     { href: '/', label: 'Home', icon: '🏠' },
     { href: '/courses', label: 'Courses', icon: '🎓' },
+    { href: '/mentorship/dashboard', label: 'Dashboard', icon: '🚀' },
     { href: '/current-affairs', label: 'CA', icon: '📰' },
     { href: '/daily-quiz', label: 'Quiz', icon: '✍️' },
-    { href: '/resources', label: 'Resources', icon: '📚' },
     { href: '/profile', label: 'Profile', icon: '👤' },
 ];
 

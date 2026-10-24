@@ -86,7 +86,18 @@ export default function Header() {
                 <div className="flex-1" />
 
                 {/* Actions */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5 sm:gap-3">
+                    {/* Mentorship Dashboard Quick CTA */}
+                    <Link
+                        href="/mentorship/dashboard"
+                        className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-[#FFF7ED] to-[#FEF3C7] hover:from-[#FFEDD5] hover:to-[#FDE68A] text-[#B45309] border border-amber-200/80 text-xs font-bold rounded-xl transition-all shadow-2xs hover:shadow-xs active:scale-[0.98]"
+                        title="Go to Mentorship Dashboard"
+                    >
+                        <span>🚀</span>
+                        <span className="hidden md:inline">Mentorship</span>
+                        <span>Dashboard</span>
+                    </Link>
+
                     {/* Search */}
                     <button
                         onClick={() => router.push('/search')}
