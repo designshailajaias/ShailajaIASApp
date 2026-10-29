@@ -93,6 +93,8 @@ export default function AdminResourcesPage() {
     const [itemOrder, setItemOrder] = useState(0);
     const [itemPublished, setItemPublished] = useState(true);
     const [pdfFile, setPdfFile] = useState<File | null>(null);
+    const [existingPdfUrl, setExistingPdfUrl] = useState('');
+    const [existingPdfKey, setExistingPdfKey] = useState('');
     const [itemSubmitting, setItemSubmitting] = useState(false);
     const [itemError, setItemError] = useState('');
     const [deleteItemTarget, setDeleteItemTarget] = useState<{ id: string; title: string } | null>(null);
@@ -235,9 +237,8 @@ export default function AdminResourcesPage() {
     const fetchItems = async () => {
         setIsItemLoading(true);
         try {
-            const catParam = filterCatId ? `/${filterCatId}` : '';
             const url = filterCatId
-                ? `${API_URL}/api/resources/categories/${filterCatId}`
+                ? `${API_URL}/api/resources/categories/${filterCatId}?includeUnpublished=true`
                 : `${API_URL}/api/resources/categories?includeUnpublished=true`;
             const res = await fetch(url, {
                 headers: { Authorization: `Bearer ${token}` },
@@ -251,7 +252,7 @@ export default function AdminResourcesPage() {
                     // All categories — we need to fetch all items
                     const allItems: ResourceItem[] = [];
                     for (const cat of data.data) {
-                        const catRes = await fetch(`${API_URL}/api/resources/categories/${cat._id}`, {
+                        const catRes = await fetch(`${API_URL}/api/resources/categories/${cat._id}?includeUnpublished=true`, {
                             headers: { Authorization: `Bearer ${token}` },
                         });
                         const catData = await catRes.json();
@@ -281,6 +282,8 @@ export default function AdminResourcesPage() {
         setItemOrder(0);
         setItemPublished(true);
         setPdfFile(null);
+        setExistingPdfUrl('');
+        setExistingPdfKey('');
         setItemError('');
         setEditItemId(null);
         if (fileInputRef.current) fileInputRef.current.value = '';
@@ -296,6 +299,9 @@ export default function AdminResourcesPage() {
             setItemDesc(item.description || '');
             setItemOrder(item.order);
             setItemPublished(item.isPublished);
+            setExistingPdfUrl(item.pdfUrl || '');
+            setExistingPdfKey(item.pdfKey || '');
+            setPdfFile(null);
         } else {
             resetItemForm();
             if (filterCatId) setItemCat(filterCatId);
@@ -917,7 +923,25 @@ export default function AdminResourcesPage() {
                                         <div className="text-blue-600">
                                             <span className="text-3xl">📄</span>
                                             <p className="mt-2 font-medium">{pdfFile.name}</p>
-                                            <p className="text-xs text-gray-500 mt-1">{(pdfFile.size / (1024 * 1024)).toFixed(2)} MB</p>
+                                            <p className="text-xs text-gray-500 mt-1">{(pdfFile.size / (1024 * 1024)).toFixed(2)} MB (New file selected)</p>
+                                        </div>
+                                    ) : existingPdfUrl ? (
+                                        <div className="text-emerald-700">
+                                            <span className="text-3xl">📄</span>
+                                            <p className="mt-2 font-medium break-all">{existingPdfKey || 'Current PDF Document'}</p>
+                                            <div className="flex items-center justify-center gap-3 mt-1.5">
+                                                <a
+                                                    href={getFullUrl(existingPdfUrl)}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                    className="text-xs text-blue-600 underline font-semibold hover:text-blue-800"
+                                                >
+                                                    View Current PDF ↗
+                                                </a>
+                                                <span className="text-xs text-gray-400">•</span>
+                                                <span className="text-xs text-gray-500">Click box to replace</span>
+                                            </div>
                                         </div>
                                     ) : (
                                         <div className="text-gray-500">
@@ -949,7 +973,7 @@ export default function AdminResourcesPage() {
                                     disabled={itemSubmitting}
                                     className="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
                                 >
-                                    {itemSubmitting ? 'Saving...' : (editItemId ? 'Update Resource' : 'Upload Resource')}
+                                    {itemSubmitting ? 'Saving...' : (editItemId ? 'Update Resource' : 'Create Resource')}
                                 </button>
                                 <button
                                     type="button"

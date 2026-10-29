@@ -59,16 +59,19 @@ export const getCategories = async (req: Request, res: Response): Promise<void> 
 // @access  Public
 export const getCategoryWithItems = async (req: Request, res: Response): Promise<void> => {
     try {
+        const { includeUnpublished } = req.query;
         const category = await ResourceCategory.findById(req.params.id).lean();
         if (!category) {
             res.status(404).json({ success: false, message: 'Category not found' });
             return;
         }
 
-        const items = await ResourceItem.find({
-            category: req.params.id,
-            isPublished: true,
-        })
+        const itemFilter: Record<string, unknown> = { category: req.params.id };
+        if (includeUnpublished !== 'true') {
+            itemFilter.isPublished = true;
+        }
+
+        const items = await ResourceItem.find(itemFilter)
             .sort({ order: 1, createdAt: 1 })
             .lean();
 

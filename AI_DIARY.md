@@ -1803,6 +1803,27 @@ Admin creates content
      - **CI/CD & Environment Specs**: Created `.github/workflows/deploy.yml` for automated linting, typechecking, and ECR deployment, along with `.env.example` templates for both API and Client.
      - **Full Plan Document**: Documented in `cloud_migration_plan.md`.
 
+### Session: 2026-10-29 — Resolution of All 18 Failed QA Testcases from Bugsheet.xlsx
+- **Who:** AI (Antigravity)
+- **Goal:** Resolve all 18 failed QA test cases across both sheets of `Bugsheet.xlsx` (6 in Admin Portal Bugsheet, 12 in User Webpage) following strict user approval protocol.
+- **Admin Portal Fixes (`apps/client/app/admin` & `apps/api`):**
+  1. **Admin Responsiveness (Sheet 1, Row 34)**: Added `2k: '2048px'` screen breakpoint in `tailwind.config.js` and fluid scaling (`2k:max-w-[2000px] 2k:px-10 4k:max-w-[2400px] 5k:max-w-[3400px]`) in `admin/layout.tsx` for optimal rendering on 2560×1440 and 3840×2160 displays.
+  2. **Resource Item Button Title (Sheet 1, Row 49)**: Updated button label in `admin/resources/page.tsx` from "Upload Resource" to `"Create Resource"` when creating a new resource item (`!editItemId`).
+  3. **Resource Item Draft Status (Sheet 1, Row 50)**: Updated `getCategoryWithItems` controller in `resource.controller.ts` to support `req.query.includeUnpublished === 'true'`. In `admin/resources/page.tsx`, passed `?includeUnpublished=true` in `fetchItems()` so items saved with "Published" unchecked appear immediately in the admin list as `Draft`.
+  4. **Retain PDF Details on Edit (Sheet 1, Row 51)**: In `admin/resources/page.tsx`, retained `existingPdfKey` and `existingPdfUrl` in state during `openItemForm(item)`. Rendered existing document filename, direct view/download link, and "Click box to replace" hint in the PDF upload dropzone.
+  5. **Prelims Test Series Delete Modal (Sheet 1, Row 52)**: Replaced native browser `window.confirm()` in `admin/test-series/prelims-test-series/page.tsx` with a custom styled modal popup dialog matching the design system (`#1E3A5F`, `#DC2626`).
+  6. **"Go back to Test series" Link (Sheet 1, Row 53)**: Added `<Link href="/admin/test-series">← Go back to Test series</Link>` at the top of Prelims Test Series, Prelims Practice Test, Mains Test Series, and Mains Practice Test submodule pages.
+- **User Webpage Fixes (`apps/client`):**
+  1. **Landing Page Responsiveness (Sheet 2, Row 26)**: Added intermediate screen scaling (`2k:max-w-[2000px] 2k:px-12 4k:max-w-[2400px] 5k:max-w-[3400px]`) in `components/Header.tsx` and `app/page.tsx` to eliminate narrow layout constraints on 2560×1440 and 3840×2160 displays.
+  2. **Prelims Test Series Close Button (Sheet 2, Row 27)**: Removed the duplicate SVG chevron from the close button in `prelims-test-series/page.tsx`, rendering only a single navigation icon: `✕ Close / Exit Test`.
+  3. **Prelims Test Series Overview Controls (Sheet 2, Rows 28, 29, 30)**: Eliminated duplicate controls on the Test Overview screen in `prelims-test-series/page.tsx` so the view renders exactly **1 Submit button** ("Submit Test"), **1 Go back button** ("← Back to Test"), and **1 Resume button** ("Resume Test").
+  4. **Prelims Practice Test Close Button (Sheet 2, Row 31)**: Removed the duplicate SVG chevron from the close button in `prelims-practice-test/page.tsx`, rendering only a single navigation icon: `✕ Close / Exit Practice`.
+  5. **Prelims Practice Test Overview Controls (Sheet 2, Rows 32, 33, 34)**: Streamlined controls on the Practice Overview screen in `prelims-practice-test/page.tsx` so the view renders exactly **1 Submit button** ("Submit Test"), **1 Go back button** ("← Back to Practice"), and **1 Resume button** ("Resume Practice").
+  6. **Mains Test Series Navigation Arrow (Sheet 2, Row 35)**: Removed duplicate arrow character text `←` next to the SVG chevron in `tests/mains-test-series/page.tsx`, displaying a single `< Back to All Series` navigation control.
+  7. **Mains Test Series In-Page Ask Doubt (Sheet 2, Row 36)**: Replaced the redirect link `<Link href="/profile">` in `tests/mains-test-series/page.tsx` with a full in-page **Ask Doubt Modal** (Title, Description, Category) submitting to `POST /api/doubts` with real-time feedback.
+  8. **Mains Test Series Upload Modal Close (Sheet 2, Row 37)**: Added `setShowUploadModal(false)` upon upload success in `tests/mains-test-series/page.tsx` so the upload dialog automatically closes after the student clicks Submit.
+- **Verification:** Both API (`tsc`) and Client (`tsc --noEmit` + production `next build` across all 58 routes) compiled with 0 errors.
+
 ### Session: 2026-10-22 — Zero-Cost Cloud Migration Prep (Render + Vercel + MongoDB Atlas)
 - **Who:** AI (Antigravity)
 - **What:** Prepared repository for rapid zero-cost demo deployment on Render (API) and Vercel (Frontend):

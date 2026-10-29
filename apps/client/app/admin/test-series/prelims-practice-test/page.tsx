@@ -291,9 +291,9 @@ export default function PrelimsPracticeTestPage() {
             <div className="mb-8">
                 <button
                     onClick={() => router.push('/admin/test-series')}
-                    className="flex items-center text-xs font-semibold text-slate-500 hover:text-slate-700 transition-colors uppercase tracking-wider mb-3 gap-1"
+                    className="flex items-center text-sm font-semibold text-slate-500 hover:text-[#1E3A5F] transition-colors mb-3 gap-1.5 group cursor-pointer"
                 >
-                    <span>←</span> Back to Test Modules
+                    <span className="transition-transform group-hover:-translate-x-0.5">←</span> Go back to Test series
                 </button>
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>

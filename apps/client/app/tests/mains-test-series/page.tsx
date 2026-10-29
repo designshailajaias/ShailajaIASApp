@@ -62,6 +62,14 @@ export default function MainsTestSeriesPage() {
     const [showVideoModal, setShowVideoModal] = useState(false);
     const [videoUrl, setVideoUrl] = useState('');
 
+    // Doubt states
+    const [showDoubtModal, setShowDoubtModal] = useState<MainsTestSeriesItem | null>(null);
+    const [doubtTitle, setDoubtTitle] = useState('');
+    const [doubtDescription, setDoubtDescription] = useState('');
+    const [isSubmittingDoubt, setIsSubmittingDoubt] = useState(false);
+    const [doubtSubmitSuccess, setDoubtSubmitSuccess] = useState(false);
+    const [doubtError, setDoubtError] = useState('');
+
     // Fetch initial data
     useEffect(() => {
         fetchInitialData();
@@ -203,6 +211,7 @@ export default function MainsTestSeriesPage() {
             if (data.success) {
                 setUploadSuccess(isReuploading ? 'Answer sheet reuploaded successfully! Previous copy replaced.' : 'Answer sheet uploaded successfully! Your submission is now being tracked.');
                 setUploadFiles([]);
+                setShowUploadModal(false);
                 fetchMySubmissions(selectedSeries._id);
             } else {
                 setUploadError(data.message || 'Failed to upload answer sheet');
@@ -212,6 +221,53 @@ export default function MainsTestSeriesPage() {
             setUploadError('An error occurred while uploading');
         } finally {
             setIsUploading(false);
+        }
+    };
+
+    // Submit doubt to database
+    const handleSubmitDoubt = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!token) {
+            setDoubtError('You must be logged in to submit a doubt.');
+            return;
+        }
+        if (!doubtDescription.trim()) {
+            setDoubtError('Please provide a description for your doubt.');
+            return;
+        }
+        setIsSubmittingDoubt(true);
+        setDoubtError('');
+        try {
+            const body: any = {
+                subject: showDoubtModal?.subjectCategory || 'General',
+                title: doubtTitle || `Doubt: ${showDoubtModal?.title}`,
+                description: doubtDescription,
+                testSeries: selectedSeries?._id,
+                testSeriesUniqueId: selectedSeries?.uniqueId,
+                testItemTitle: showDoubtModal?.title,
+            };
+
+            const res = await fetch(`${API_URL}/api/doubts`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(body),
+            });
+            const data = await res.json();
+            if (data.success) {
+                setDoubtSubmitSuccess(true);
+                setDoubtDescription('');
+                setDoubtTitle('');
+            } else {
+                setDoubtError(data.message || 'Failed to submit doubt.');
+            }
+        } catch (error) {
+            console.error('Submit doubt error:', error);
+            setDoubtError('Failed to submit doubt. Please check your connection.');
+        } finally {
+            setIsSubmittingDoubt(false);
         }
     };
 
@@ -316,9 +372,9 @@ export default function MainsTestSeriesPage() {
                 {/* Back nav */}
                 <div className="mb-4">
                     {seriesList.length > 1 ? (
-                        <button onClick={() => { setSelectedSeries(null); setExpandedIndex(null); }} className="inline-flex items-center gap-2 text-sm font-semibold text-[#D97706] hover:text-[#B45309] transition-colors">
+                        <button onClick={() => { setSelectedSeries(null); setExpandedIndex(null); }} className="inline-flex items-center gap-2 text-sm font-semibold text-[#D97706] hover:text-[#B45309] transition-colors cursor-pointer">
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-                            ← Back to All Series
+                            Back to All Series
                         </button>
                     ) : (
                         <Link href="/tests" className="inline-flex items-center gap-2 text-sm font-semibold text-[#D97706] hover:text-[#B45309] transition-colors">
@@ -515,18 +571,27 @@ export default function MainsTestSeriesPage() {
                                                     </a>
 
                                                     {/* 3. Ask Doubt */}
-                                                    <Link
-                                                        href={isDoubtLocked ? '#' : '/profile'}
-                                                        onClick={e => { if (isDoubtLocked) e.preventDefault(); }}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            if (!isDoubtLocked) {
+                                                                setShowDoubtModal(test);
+                                                                setDoubtTitle(`Doubt: ${test.title}`);
+                                                                setDoubtDescription('');
+                                                                setDoubtError('');
+                                                                setDoubtSubmitSuccess(false);
+                                                            }
+                                                        }}
+                                                        disabled={isDoubtLocked}
                                                         className={`flex flex-col items-center gap-1 p-3 rounded-xl border text-center transition-all ${
                                                             isDoubtLocked
                                                                 ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed opacity-50'
-                                                                : 'bg-white border-gray-200 hover:shadow-sm text-gray-700'
+                                                                : 'bg-white border-gray-200 hover:shadow-sm text-gray-700 cursor-pointer'
                                                         }`}
                                                     >
                                                         <span className="text-2xl">❓{isDoubtLocked && '🔒'}</span>
                                                         <span className="text-[10px] font-bold leading-tight">Ask Doubt</span>
-                                                    </Link>
+                                                    </button>
 
                                                     {/* 4. Test Discussion Video */}
                                                     <button
@@ -796,6 +861,159 @@ export default function MainsTestSeriesPage() {
                                 allowFullScreen
                             />
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Ask Doubt Modal */}
+            {showDoubtModal && (
+                <div
+                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in"
+                    onClick={() => { setShowDoubtModal(null); setDoubtSubmitSuccess(false); setDoubtError(''); }}
+                >
+                    <div
+                        className="bg-white rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl relative border border-gray-100 animate-scale-in"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="flex justify-between items-center mb-5 pb-3 border-b border-gray-100">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center text-lg font-bold">
+                                    ❓
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold text-[#1E3A5F] font-headline">Ask a Doubt</h3>
+                                    <p className="text-xs text-gray-500">Subject Matter Experts will reply directly to your desk</p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => { setShowDoubtModal(null); setDoubtSubmitSuccess(false); setDoubtError(''); }}
+                                className="w-8 h-8 rounded-full bg-gray-50 hover:bg-gray-100 text-gray-500 flex items-center justify-center text-sm font-bold transition-colors cursor-pointer"
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        {!token ? (
+                            <div className="text-center py-6">
+                                <p className="text-gray-600 text-sm mb-6">
+                                    You must be logged in to submit a doubt to our subject matter experts.
+                                </p>
+                                <div className="flex flex-col gap-2">
+                                    <Link
+                                        href="/login"
+                                        className="w-full py-3 bg-[#1E3A5F] hover:bg-[#2A4E7D] text-white text-center font-bold text-sm rounded-xl shadow-md transition-colors"
+                                    >
+                                        Log In / Register
+                                    </Link>
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowDoubtModal(null)}
+                                        className="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 text-center font-bold text-sm rounded-xl transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        ) : doubtSubmitSuccess ? (
+                            <div className="text-center py-6">
+                                <div className="w-16 h-16 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-bold">
+                                    ✓
+                                </div>
+                                <h4 className="text-lg font-bold text-gray-900 mb-2 font-headline">Doubt Submitted!</h4>
+                                <p className="text-gray-500 text-xs mb-6 max-w-sm mx-auto leading-relaxed">
+                                    Your doubt has been forwarded to our mentor team. You can view responses in your Profile under &quot;My Doubts&quot;.
+                                </p>
+                                <div className="flex gap-3">
+                                    <Link
+                                        href="/profile"
+                                        className="flex-1 py-3 bg-[#1E3A5F] hover:bg-[#2A4E7D] text-white text-center font-bold text-xs rounded-xl shadow-sm transition-colors"
+                                    >
+                                        View in Profile
+                                    </Link>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setShowDoubtModal(null);
+                                            setDoubtSubmitSuccess(false);
+                                        }}
+                                        className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 text-center font-bold text-xs rounded-xl transition-colors"
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <form onSubmit={handleSubmitDoubt} className="space-y-4">
+                                <div className="bg-slate-50 border border-slate-100 rounded-2xl p-3 text-xs text-gray-600">
+                                    {selectedSeries?.uniqueId && (
+                                        <p className="mb-1">
+                                            <strong>Series:</strong> <span className="bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded font-bold">{selectedSeries.uniqueId}</span> {selectedSeries.title}
+                                        </p>
+                                    )}
+                                    <p className="truncate"><strong>Test:</strong> {showDoubtModal.title}</p>
+                                    <p className="mt-1"><strong>Subject:</strong> {showDoubtModal.subjectCategory || 'General'}</p>
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-bold text-[#1E3A5F] mb-1.5 uppercase tracking-wider">
+                                        Doubt Title
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={doubtTitle}
+                                        onChange={(e) => setDoubtTitle(e.target.value)}
+                                        placeholder="Brief title for your doubt"
+                                        className="w-full h-10 px-3 border border-gray-200 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#1E3A5F]/20"
+                                        required
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-bold text-[#1E3A5F] mb-1.5 uppercase tracking-wider">
+                                        Doubt Description
+                                    </label>
+                                    <textarea
+                                        value={doubtDescription}
+                                        onChange={(e) => setDoubtDescription(e.target.value)}
+                                        rows={4}
+                                        placeholder="Explain exactly what you find confusing (e.g., model answer approach, question phrasing, etc.)"
+                                        className="w-full p-3 border border-gray-200 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#1E3A5F]/20 resize-none"
+                                        required
+                                    />
+                                </div>
+
+                                {doubtError && (
+                                    <p className="text-xs text-red-600 font-bold bg-red-50 p-2 rounded-lg border border-red-100">
+                                        ⚠️ {doubtError}
+                                    </p>
+                                )}
+
+                                <div className="flex gap-3 pt-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowDoubtModal(null)}
+                                        disabled={isSubmittingDoubt}
+                                        className="flex-1 py-3 border border-gray-200 text-gray-600 font-bold text-xs rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={isSubmittingDoubt}
+                                        className="flex-1 py-3 bg-[#1E3A5F] hover:bg-[#2A4E7D] text-white font-bold text-xs rounded-xl shadow-md transition-colors disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                                    >
+                                        {isSubmittingDoubt ? (
+                                            <>
+                                                <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                                <span>Submitting...</span>
+                                            </>
+                                        ) : (
+                                            <span>Submit Doubt</span>
+                                        )}
+                                    </button>
+                                </div>
+                            </form>
+                        )}
                     </div>
                 </div>
             )}

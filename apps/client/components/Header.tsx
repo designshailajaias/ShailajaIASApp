@@ -15,8 +15,8 @@ export default function Header() {
 
 
     return (
-        <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 h-16 4k:h-20">
-            <div className="max-w-7xl 4k:max-w-[2400px] 5k:max-w-[3400px] mx-auto w-full h-full flex items-center justify-between px-4 md:px-8 4k:px-16">
+        <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 h-16 2k:h-18 4k:h-20">
+            <div className="max-w-7xl 2k:max-w-[2000px] 4k:max-w-[2400px] 5k:max-w-[3400px] mx-auto w-full h-full flex items-center justify-between px-4 md:px-8 2k:px-12 4k:px-16">
                 {/* Brand Logo — links to landing */}
                 <Link href="/" className="flex items-center gap-x-3 group">
                     {/* Zoom into symbol to crop whitespace */}

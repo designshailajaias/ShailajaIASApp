@@ -510,9 +510,6 @@ function PrelimsPracticeTestInner() {
                                 }}
                                 className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-red-600 mb-1 transition-colors group cursor-pointer"
                             >
-                                <svg className="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
-                                </svg>
                                 ✕ Close / Exit Practice
                             </button>
                             <h1 className="text-base md:text-lg font-bold text-[#1E3A5F] font-headline truncate">
@@ -547,29 +544,23 @@ function PrelimsPracticeTestInner() {
                                         </svg>
                                         {formatTime(timeRemaining)}
                                     </div>
-                                    {!showOverview ? (
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowOverview(true)}
-                                            className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
-                                        >
-                                            Overview
-                                        </button>
-                                    ) : (
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowOverview(false)}
-                                            className="px-3.5 py-1.5 bg-slate-600 hover:bg-slate-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
-                                        >
-                                            Back
-                                        </button>
+                                    {!showOverview && (
+                                        <>
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowOverview(true)}
+                                                className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
+                                            >
+                                                Overview
+                                            </button>
+                                            <button
+                                                onClick={() => setShowSubmitConfirmModal(true)}
+                                                className="px-4 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all cursor-pointer"
+                                            >
+                                                Submit Test
+                                            </button>
+                                        </>
                                     )}
-                                    <button
-                                        onClick={() => setShowSubmitConfirmModal(true)}
-                                        className="px-4 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all cursor-pointer"
-                                    >
-                                        Submit Test
-                                    </button>
                                 </div>
                             )}
                         </div>
@@ -829,10 +820,10 @@ function PrelimsPracticeTestInner() {
                                             <svg className="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
                                             </svg>
-                                            Back to Test
+                                            Back to Practice
                                         </button>
                                         <h2 className="text-2xl font-bold text-[#1E3A5F] font-headline">
-                                            Test Overview
+                                            Practice Overview
                                         </h2>
                                         <p className="text-gray-500 text-sm mt-1">
                                             Review your progress. Click on any question card to jump back to it.
@@ -842,14 +833,14 @@ function PrelimsPracticeTestInner() {
                                         <button
                                             type="button"
                                             onClick={() => setShowOverview(false)}
-                                            className="px-5 py-2.5 border border-gray-200 hover:bg-gray-50 text-gray-700 font-bold text-sm rounded-xl transition-all bg-white"
+                                            className="px-5 py-2.5 border border-gray-200 hover:bg-gray-50 text-gray-700 font-bold text-sm rounded-xl transition-all bg-white cursor-pointer"
                                         >
-                                            Resume Test
+                                            Resume Practice
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => setShowSubmitConfirmModal(true)}
-                                            className="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold text-sm rounded-xl transition-all shadow-sm"
+                                            className="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold text-sm rounded-xl transition-all shadow-sm cursor-pointer"
                                         >
                                             Submit Test
                                         </button>

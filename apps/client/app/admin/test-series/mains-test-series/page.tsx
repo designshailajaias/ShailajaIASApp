@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useAuth } from '../../AuthContext';
 import { API_URL } from '@/lib/api';
 
@@ -405,6 +406,16 @@ interface MasterTag {
     // List View
     return (
         <div className="p-8 min-h-screen bg-slate-50 font-body">
+            {/* Go back to Test series Link */}
+            <div className="mb-4">
+                <Link
+                    href="/admin/test-series"
+                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 hover:text-[#E65100] transition-colors group"
+                >
+                    <span className="transition-transform group-hover:-translate-x-0.5">←</span> Go back to Test series
+                </Link>
+            </div>
+
             <div className="flex items-center justify-between mb-6">
                 <div>
                     <h1 className="text-2xl font-bold text-slate-800 font-headline">Mains Test Series Manager</h1>

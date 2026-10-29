@@ -912,9 +912,6 @@ function PrelimsTestSeriesInner() {
                                 }}
                                 className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-red-600 mb-1 transition-colors group cursor-pointer"
                             >
-                                <svg className="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
-                                </svg>
                                 ✕ Close / Exit Test
                             </button>
                             <div className="flex items-center gap-2">
@@ -942,27 +939,22 @@ function PrelimsTestSeriesInner() {
                                         </svg>
                                         {formatTime(timeRemaining)}
                                     </div>
-                                    {!showOverview ? (
-                                        <button
-                                            onClick={() => setShowOverview(true)}
-                                            className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
-                                        >
-                                            Overview
-                                        </button>
-                                    ) : (
-                                        <button
-                                            onClick={() => setShowOverview(false)}
-                                            className="px-3.5 py-1.5 bg-slate-600 hover:bg-slate-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
-                                        >
-                                            Back
-                                        </button>
+                                    {!showOverview && (
+                                        <>
+                                            <button
+                                                onClick={() => setShowOverview(true)}
+                                                className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
+                                            >
+                                                Overview
+                                            </button>
+                                            <button
+                                                onClick={() => setShowSubmitConfirmModal(true)}
+                                                className="px-4 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all cursor-pointer"
+                                            >
+                                                Submit Test
+                                            </button>
+                                        </>
                                     )}
-                                    <button
-                                        onClick={() => setShowSubmitConfirmModal(true)}
-                                        className="px-4 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all cursor-pointer"
-                                    >
-                                        Submit Test
-                                    </button>
                                 </div>
                             )}
                         </div>
@@ -1213,22 +1205,6 @@ function PrelimsTestSeriesInner() {
                                             Review your progress. Click on any question card to jump back to it.
                                         </p>
                                     </div>
-                                    <div className="flex items-center gap-3">
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowOverview(false)}
-                                            className="px-5 py-2.5 border border-gray-200 hover:bg-gray-50 text-gray-700 font-bold text-sm rounded-xl transition-all bg-white"
-                                        >
-                                            Resume Test
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowSubmitConfirmModal(true)}
-                                            className="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold text-sm rounded-xl transition-all shadow-sm"
-                                        >
-                                            Submit Test
-                                        </button>
-                                    </div>
                                 </div>
 
                                 {/* Stats summary cards */}
@@ -1318,9 +1294,9 @@ function PrelimsTestSeriesInner() {
                                         <button
                                             type="button"
                                             onClick={() => setShowSubmitConfirmModal(true)}
-                                            className="flex-1 sm:flex-initial px-6 h-11 bg-red-600 hover:bg-red-700 text-white font-bold text-sm rounded-xl transition-all shadow-md"
+                                            className="flex-1 sm:flex-initial px-6 h-11 bg-red-600 hover:bg-red-700 text-white font-bold text-sm rounded-xl transition-all shadow-md cursor-pointer"
                                         >
-                                            End & Submit Test
+                                            Submit Test
                                         </button>
                                     </div>
                                 </div>

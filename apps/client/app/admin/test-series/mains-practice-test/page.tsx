@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { useAuth } from '../../AuthContext';
 import { API_URL } from '@/lib/api';
 
@@ -506,6 +507,16 @@ export default function AdminMainsPracticeTestPage() {
     // List View
     return (
         <div className="p-8 min-h-screen bg-slate-50 font-body">
+            {/* Go back to Test series Link */}
+            <div className="mb-4">
+                <Link
+                    href="/admin/test-series"
+                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 hover:text-[#2E7D32] transition-colors group"
+                >
+                    <span className="transition-transform group-hover:-translate-x-0.5">←</span> Go back to Test series
+                </Link>
+            </div>
+
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
                 <div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useAuth } from '../../AuthContext';
 import { API_URL } from '@/lib/api';
 
@@ -37,6 +38,8 @@ export default function AdminPrelimsTestSeriesPage() {
     const [seriesList, setSeriesList] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
+    const [deleteTarget, setDeleteTarget] = useState<{ id: string; title: string } | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
     const [form, setForm] = useState<TestSeriesForm>({
         title: '',
         description: '',
@@ -294,23 +297,28 @@ interface MasterTag {
         }
     };
 
-    const handleDeleteSeries = async (id: string) => {
-        if (!confirm('Are you sure you want to delete this test series group? This will permanently delete the group and all its auto-created quizzes.')) return;
-
+    const confirmDeleteSeries = async () => {
+        if (!deleteTarget) return;
+        setIsDeleting(true);
         try {
-            const res = await fetch(`${API_URL}/api/tests/series/${id}`, {
+            const res = await fetch(`${API_URL}/api/tests/series/${deleteTarget.id}`, {
                 method: 'DELETE',
                 headers: { Authorization: `Bearer ${token}` },
             });
             const data = await res.json();
 
             if (data.success) {
-                setSeriesList(prev => prev.filter(s => s._id !== id));
+                setSeriesList(prev => prev.filter(s => s._id !== deleteTarget.id));
+                setSuccessMessage('Test series deleted successfully');
             } else {
-                alert(data.message || 'Failed to delete test series');
+                setErrorMessage(data.message || 'Failed to delete test series');
             }
         } catch (error) {
             console.error('Failed to delete:', error);
+            setErrorMessage('Network error while deleting test series');
+        } finally {
+            setIsDeleting(false);
+            setDeleteTarget(null);
         }
     };
 
@@ -398,6 +406,16 @@ interface MasterTag {
 
     return (
         <div className="p-8 font-body min-h-screen bg-slate-50">
+            {/* Go back to Test series Link */}
+            <div className="mb-5">
+                <Link
+                    href="/admin/test-series"
+                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 hover:text-[#1E3A5F] transition-colors group"
+                >
+                    <span className="transition-transform group-hover:-translate-x-0.5">←</span> Go back to Test series
+                </Link>
+            </div>
+
             {/* Success & Error alerts */}
             {successMessage && (
                 <div className="mb-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-sm font-semibold flex items-center gap-2">
@@ -498,8 +516,8 @@ interface MasterTag {
                                             Edit Group
                                         </button>
                                         <button
-                                            onClick={() => handleDeleteSeries(series._id)}
-                                            className="px-4 py-2 bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 font-bold text-xs rounded-xl transition-colors"
+                                            onClick={() => setDeleteTarget({ id: series._id, title: series.title })}
+                                            className="px-4 py-2 bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 font-bold text-xs rounded-xl transition-colors cursor-pointer"
                                         >
                                             Delete
                                         </button>
@@ -900,6 +918,50 @@ interface MasterTag {
                             </button>
                         </div>
                     </form>
+                </div>
+            )}
+
+            {/* Custom Delete Confirmation Modal */}
+            {deleteTarget && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                    style={{ background: 'rgba(0,0,0,0.5)' }}
+                    onClick={() => !isDeleting && setDeleteTarget(null)}
+                >
+                    <div
+                        className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-fade-in"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center text-xl mb-4">
+                            🗑️
+                        </div>
+                        <h3 className="text-lg font-bold text-slate-900 mb-2 font-headline">Delete Test Series Group</h3>
+                        <p className="text-slate-600 text-sm mb-2">Are you sure you want to delete this test series group?</p>
+                        <p className="text-slate-900 font-semibold text-sm mb-4 bg-slate-50 p-3 rounded-xl border border-slate-200 break-words whitespace-pre-wrap">
+                            &quot;{deleteTarget.title}&quot;
+                        </p>
+                        <p className="text-rose-600 text-xs mb-6 font-medium">
+                            ⚠️ This will permanently delete the group and all its auto-created quizzes. This action cannot be undone.
+                        </p>
+                        <div className="flex gap-3 justify-end">
+                            <button
+                                type="button"
+                                onClick={() => setDeleteTarget(null)}
+                                disabled={isDeleting}
+                                className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-bold transition-colors disabled:opacity-50"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                onClick={confirmDeleteSeries}
+                                disabled={isDeleting}
+                                className="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-sm font-bold transition-colors disabled:opacity-50 shadow-sm"
+                            >
+                                {isDeleting ? 'Deleting...' : 'Delete Group'}
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>

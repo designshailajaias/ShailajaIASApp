@@ -183,7 +183,7 @@ export default function LandingPage() {
 
     return (
         <div className="min-h-screen bg-[#FAFAF8] pb-24 font-body">
-            <main className="pt-20 px-4 md:px-8 max-w-7xl 4k:max-w-[2400px] 5k:max-w-[3400px] mx-auto space-y-8">
+            <main className="pt-20 px-4 md:px-8 2k:px-12 4k:px-16 max-w-7xl 2k:max-w-[2000px] 4k:max-w-[2400px] 5k:max-w-[3400px] mx-auto space-y-8">
 
                 {/* ══════════════════════════════════════════════════════════ */}
                 {/* HERO BANNER CAROUSEL                                      */}
